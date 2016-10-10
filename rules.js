@@ -115,17 +115,15 @@ var rules = {
         {id: 'tower', name: 'Tower', bonus: 4, penalty: -10, arcaneFailure: 50, weight: 45}
     ],
     acFactors: [
-        {type: 'armor', flatFooted: true, touch: false, scorePath: 'pc.armor.bonus'},
-        {type: 'armor enhancement', flatFooted: true, touch: false, scorePath: 'pc.armor.enhancement'},
-        {type: 'shield', flatFooted: true, touch: false, scorePath: 'pc.shield.bonus'},
-        {type: 'shield enhancement', flatFooted: true, touch: false, scorePath: 'pc.shield.enhancement'},
+        {type: 'armor', flatFooted: true, touch: false, scorePath: 'armor.total'},
+        {type: 'shield', flatFooted: true, touch: false, scorePath: 'shield.total'},
         {type: 'natural', flatFooted: true, touch: false, scorePath: 'pc.naturalArmor'},
         {type: 'deflection', flatFooted: true, touch: true, scorePath: 'deflection'},
         {type: 'size', flatFooted: true, touch: true, scorePath: 'size.modifier'},
         {type: 'dexterity', flatFooted: false, touch: true, scorePath: 'effectiveDex'}
     ],
     enhancers: {
-        ids: [
+        categories: [
             {id: 'object', name: 'Object'},
             {id: 'potion', name: 'Potion'},
             {id: 'spell', name: 'Spell'}

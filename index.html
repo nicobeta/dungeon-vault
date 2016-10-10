@@ -57,6 +57,20 @@
     </ul>
 </div>
 
+<!-- Classes -->
+<fieldset>
+    <div v-for="(cl, index) in pc.classes">
+        <select v-model="cl.id">
+            <option v-for="value in rules.classes" v-bind:value="value.id">
+                {{value.name}}
+            </option>
+        </select>
+        <input type="number" v-model.number="cl.levels">
+        <button @click='removeLevels(index)'>&times;</button>
+    </div>
+    <button @click='addLevels'>Add levels</button>
+</fieldset>
+
 <!-- Armor -->
 <div>
     <select v-model="pc.armor.id">
@@ -100,18 +114,29 @@
     <input type="number" v-model.number="pc.sr">
 </div>
 
+<!-- Natural armor -->
+<div>
+    <input type="number" v-model.number="pc.naturalArmor">
+</div>
+
 <!-- Classes -->
 <fieldset>
-    <div v-for="(cl, index) in pc.classes">
-        <select v-model="cl.id">
-            <option v-for="value in rules.classes" v-bind:value="value.id">
-                {{value.name}}
+    <div v-for="(enhancer, index) in pc.enhancers">
+        <input type="text" v-model="enhancer.name">
+        <select v-model="enhancer.category">
+            <option v-for="category in rules.enhancers.categories" v-bind:value="category.id">
+                {{category.name}}
             </option>
         </select>
-        <input type="number" v-model.number="cl.levels">
-        <button @click='removeLevels(index)'>&times;</button>
+        <select v-model="enhancer.type">
+            <option v-for="type in rules.enhancers.types" v-bind:value="type">
+                {{type}}
+            </option>
+        </select>
+        <input type="number" v-model.number="enhancer.bonus">
+        <button @click='removeEnhancer(index)'>&times;</button>
     </div>
-    <button @click='addLevels'>Add levels</button>
+    <button @click='addEnhancer'>Add enhancer</button>
 </fieldset>
 
 </div>
@@ -165,6 +190,48 @@ var vm = new Vue({
             },
             sr: 27,
             enhancers: [
+                {
+                  "category": "object",
+                  "name": "Gloves of Dexterity",
+                  "type": "dex",
+                  "bonus": 6
+                },
+                {
+                  "category": "object",
+                  "name": "Belt of Giant",
+                  "type": "str",
+                  "bonus": 6
+                },
+                {
+                  "category": "object",
+                  "name": "Amulet of Health",
+                  "type": "con",
+                  "bonus": 6
+                },
+                {
+                  "category": "object",
+                  "name": "Cloak of Resistance",
+                  "type": "saves",
+                  "bonus": 6
+                },
+                {
+                  "category": "object",
+                  "name": "Ring of Protection",
+                  "type": "deflection",
+                  "bonus": 5
+                },
+                {
+                  "category": "object",
+                  "name": "Armor Scuffs",
+                  "type": "armor",
+                  "bonus": 6
+                },
+                {
+                  "category": "potion",
+                  "name": "Mage Armor",
+                  "type": "armor",
+                  "bonus": 4
+                }
             ],
             classes: [
                 {id: 'fighter', levels: 4},
@@ -175,48 +242,44 @@ var vm = new Vue({
     },
     computed: {
         abilities: function () {
-            var vm = this,
-                modifiers = {};
-
-            // Loop abilities
-            _.forEach(vm.rules.abilities, function (ability) {
-                var enhancer = false,
-                    bonus = 0,
-                    score = vm.pc.abilities[ability],
-                    modifier;
-
-                // Add enhancers
-                _.forEach(vm.pc.enhancers, function (item) {
-                    if (item.type === ability) {
-                        if (!enhancer || enhancer < item.bonus) {
-                            enhancer = item;
-                            bonus = item.bonus;
-                        }
-                    }
-                });
-
-                // Set modifier
-                modifier = Math.floor((score + bonus - 10) / 2);
-
-                // Set object item
-                modifiers[ability] = {name: ability, score: score, enhancer: enhancer, modifier: modifier};
+            var vm = this;
+            return _.mapValues(vm.pc.abilities, function (value, key) {
+                var ability = {name: key, score: value};
+                ability.enhancer = _.chain(vm.pc.enhancers).filter({type: key}).maxBy('bonus').value();
+                ability.modifier = Math.floor((ability.score + (ability.enhancer? ability.enhancer.bonus : 0) - 10) / 2);
+                return ability;
             });
-
-            // Return modifiers object
-            return modifiers;
         },
         abilitiesString: function () {
             return _.map(this.abilities, function (value) {
-                return value.name.toUpperCase() + ' ' + (value.modifier > -1 ? '+' : '') + value.modifier;
+                var string = value.name.toUpperCase() + ' ' + (value.modifier > -1 ? '+' : '') + value.modifier;
+                if (value.enhancer) {
+                    string += ' (' + value.enhancer.name + ' +' + value.enhancer.bonus + ')';
+                }
+                return string;
             }).join(', ');
         },
         armor: function () {
-            var vm = this;
-            return _.find(vm.rules.armors, _.matchesProperty('id', vm.pc.armor.id));
+            var vm = this,
+                armor;
+            armor = _.find(vm.rules.armors, _.matchesProperty('id', vm.pc.armor.id));
+            armor.total = armor.bonus + vm.pc.armor.enhancement;
+            armor.magic = _.chain(vm.pc.enhancers).filter({type: 'armor'}).maxBy('bonus').value();
+            if (armor.magic && armor.magic.bonus > armor.total) {
+                armor.total = armor.magic.bonus;
+            }
+            return armor;
         },
         shield: function () {
-            var vm = this;
-            return _.find(vm.rules.shields, _.matchesProperty('id', vm.pc.shield.id));
+            var vm = this,
+                shield;
+            shield = _.find(vm.rules.shields, _.matchesProperty('id', vm.pc.shield.id));
+            shield.total = shield.bonus + vm.pc.shield.enhancement;
+            shield.magic = _.chain(vm.pc.enhancers).filter({type: 'shield'}).maxBy('bonus').value();
+            if (shield.magic && shield.magic.bonus > shield.total) {
+                shield.total = shield.magic.bonus;
+            }
+            return shield;
         },
         size: function () {
             var vm = this,
@@ -259,18 +322,12 @@ var vm = new Vue({
             });
         },
         ac: function () {
-            var vm = this,
-                flatFooted = 10,
-                touch = 10,
-                total = 10;
-            _.each(vm.acItems, function (value) {
-                if (!_.isUndefined(value.score)) {
-                    if (value.flatFooted) flatFooted += value.score;
-                    if (value.touch) touch += value.score;
-                    total += value.score;
-                }
-            });
-            return {flatFooted: flatFooted, touch: touch, total: total};
+            var vm = this;
+            return {
+                flatFooted: _.sumBy(_.filter(vm.acItems, {flatFooted: true}), 'score') + 10,
+                touch: _.sumBy(_.filter(vm.acItems, {touch: true}), 'score') + 10,
+                total: _.sumBy(vm.acItems, 'score') + 10
+            }
         },
         acString: function () {
             return '10 ' + _.map(this.acItems, function (value) {
@@ -306,7 +363,7 @@ var vm = new Vue({
 
                 // Get the active enhancer by max bonus
                 save.magicBonus = (save.enhancers.length)? _.maxBy(save.enhancers, 'bonus').bonus : 0;
-                save.activeEnhancer = _.findLast(vm.pc.enhancers, {bonus: save.magicBonus});
+                save.activeEnhancer = _.findLast(save.enhancers, {bonus: save.magicBonus});
 
                 // Calculate total
                 save.modifier = save.base + vm.abilities[save.ability].modifier + save.magicBonus;
@@ -350,6 +407,14 @@ var vm = new Vue({
         removeLevels: function (index) {
             var vm = this;
             vm.pc.classes.splice(index, 1);
+        },
+        addEnhancer: function (index) {
+            var vm = this;
+            vm.pc.enhancers.push({category: 'object', name: '', type: '-', bonus: 0});
+        },
+        removeEnhancer: function (index) {
+            var vm = this;
+            vm.pc.enhancers.splice(index, 1);
         }
     }
 });
