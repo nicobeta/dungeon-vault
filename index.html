@@ -1,0 +1,358 @@
+<!DOCTYPE HTML>
+<html lang='en-US'>
+<head>
+<meta charset='utf-8'>
+<title>Dungeon Vault</title>
+</head>
+<body>
+
+<div id="app"></div>
+
+<template id="template">
+
+<div>
+
+<div>
+    <p><strong>{{pc.name}}</strong><br>{{pc.size}} {{pc.type}}</p>
+    <p>HP: {{hp}}</p>
+    <p>{{abilitiesString}}</p>
+    <p>AC: {{ac.total}}, touch {{ac.touch}}, flat-footed {{ac.flatFooted}} ({{acString}})</p>
+    <p>
+        Saves: {{savesString}}
+    </p>
+    <p v-if='pc.dr.reduction'>DR: {{pc.dr.reduction}}/{{pc.dr.vulnerability}}</p>
+    <p v-if='pc.sr'>SR: {{pc.sr}}</p>
+</div>
+
+<!-- Name -->
+<div>
+    <input type="text" v-model="pc.name">
+</div>
+
+<!-- Size -->
+<div>
+    <select v-model="pc.size">
+        <option v-for="size in rules.sizes" v-bind:value="size.id">
+            {{size.name}}
+        </option>
+    </select>
+</div>
+
+<!-- Type -->
+<div>
+    <select v-model="pc.type">
+        <option v-for="type in rules.types" v-bind:value="type.id">
+            {{type.name}}
+        </option>
+    </select>
+</div>
+
+<!-- Stats -->
+<div>
+    <ul>
+        <li v-for="ability in rules.abilities">
+            <code>{{ability}}</code>
+            <input type="number" v-model.number="pc.abilities[ability]">
+        </li>
+    </ul>
+</div>
+
+<!-- Armor -->
+<div>
+    <select v-model="pc.armor.id">
+        <option v-bind:value="false">-</option>
+        <option v-for="armor in rules.armors" v-bind:value="armor.id">
+            {{armor.name}}
+        </option>
+    </select>
+    <select v-if="pc.armor.id" v-model="pc.armor.enhancement">
+        <option v-for="bonus in rules.armorEnhancement" v-bind:value="bonus">
+            +{{bonus}}
+        </option>
+    </select>
+</div>
+<div>
+    <select v-model="pc.shield.id">
+        <option v-bind:value="false">-</option>
+        <option v-for="shield in rules.shields" v-bind:value="shield.id">
+            {{shield.name}}
+        </option>
+    </select>
+    <select v-if="pc.shield.id" v-model="pc.shield.enhancement">
+        <option v-for="bonus in rules.armorEnhancement" v-bind:value="bonus">
+            +{{bonus}}
+        </option>
+    </select>
+</div>
+
+<!-- Damage Reduction -->
+<div>
+    <input type="number" v-model.number="pc.dr.reduction">
+    <select v-if="pc.dr.reduction" v-model="pc.dr.vulnerability">
+        <option v-for="vulnerability in rules.vulnerabilities" v-bind:value="vulnerability.id">
+            {{vulnerability.id}}
+        </option>
+    </select>
+</div>
+
+<!-- Spell Resistance -->
+<div>
+    <input type="number" v-model.number="pc.sr">
+</div>
+
+<!-- Classes -->
+<fieldset>
+    <div v-for="(cl, index) in pc.classes">
+        <select v-model="cl.id">
+            <option v-for="value in rules.classes" v-bind:value="value.id">
+                {{value.name}}
+            </option>
+        </select>
+        <input type="number" v-model.number="cl.levels">
+        <button @click='removeLevels(index)'>&times;</button>
+    </div>
+    <button @click='addLevels'>Add levels</button>
+</fieldset>
+
+</div>
+
+</template>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.1/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.0.3/vue-resource.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.2/lodash.min.js"></script>
+<script src="rules.js"></script>
+
+<script>
+
+// Fetch JSON data
+// Basic data
+// Well, you should define the whole object!
+// Create a select
+// Create a computed property
+// Test array map
+
+var characterURI = 'stats.json';
+
+var vm = new Vue({
+    el: '#app',
+    template: '#template',
+    data: {
+        pc: {
+            name: 'Unknown',
+            size: 'medium',
+            type: 'humanoid',
+            naturalArmor: 6,
+            abilities: {
+                str: 10,
+                dex: 10,
+                con: 10,
+                wis: 10,
+                car: 10,
+                int: 10
+            },
+            armor: {
+              id: "leather",
+              enhancement: 5
+            },
+            shield: {
+              id: "tower",
+              enhancement: 5
+            },
+            dr: {
+              reduction: 15,
+              vulnerability: "good"
+            },
+            sr: 27,
+            enhancers: [
+            ],
+            classes: [
+                {id: 'fighter', levels: 4},
+                {id: 'cleric', levels: 4}
+            ]
+        },
+        rules: rules
+    },
+    computed: {
+        abilities: function () {
+            var vm = this,
+                modifiers = {};
+
+            // Loop abilities
+            _.forEach(vm.rules.abilities, function (ability) {
+                var enhancer = false,
+                    bonus = 0,
+                    score = vm.pc.abilities[ability],
+                    modifier;
+
+                // Add enhancers
+                _.forEach(vm.pc.enhancers, function (item) {
+                    if (item.type === ability) {
+                        if (!enhancer || enhancer < item.bonus) {
+                            enhancer = item;
+                            bonus = item.bonus;
+                        }
+                    }
+                });
+
+                // Set modifier
+                modifier = Math.floor((score + bonus - 10) / 2);
+
+                // Set object item
+                modifiers[ability] = {name: ability, score: score, enhancer: enhancer, modifier: modifier};
+            });
+
+            // Return modifiers object
+            return modifiers;
+        },
+        abilitiesString: function () {
+            return _.map(this.abilities, function (value) {
+                return value.name.toUpperCase() + ' ' + (value.modifier > -1 ? '+' : '') + value.modifier;
+            }).join(', ');
+        },
+        armor: function () {
+            var vm = this;
+            return _.find(vm.rules.armors, _.matchesProperty('id', vm.pc.armor.id));
+        },
+        shield: function () {
+            var vm = this;
+            return _.find(vm.rules.shields, _.matchesProperty('id', vm.pc.shield.id));
+        },
+        size: function () {
+            var vm = this,
+                pcSize = {};
+            _.forEach(rules.sizes, function (size, index) {
+                if (vm.pc.size === size.id) {
+                    size.scale = index;
+                    size.hasPenalty = (size.modifier < 0)? true : false;
+                    pcSize = size;
+                }
+            });
+            return pcSize;
+        },
+        type: function () {
+            var vm = this;
+            return _.find(vm.rules.types, _.matchesProperty('id', vm.pc.type));
+        },
+        deflection: function () {
+            var vm = this,
+                deflection = 0;
+            _.forEach(vm.pc.enhancers, function (enhancer) {
+                if (enhancer.type === 'deflection' && deflection < enhancer.bonus) {
+                    deflection = enhancer.bonus;
+                }
+            });
+            return deflection;
+        },
+        effectiveDex: function () {
+            var vm = this;
+            if (vm.pc.armor.id && (vm.abilities.dex.modifier > vm.armor.maxDex)) {
+                return vm.armor.maxDex;
+            }
+            return vm.abilities.dex.modifier;
+        },
+        acItems: function () {
+            var vm = this;
+            return _.map(vm.rules.acFactors, function (value) {
+                value.score = _.get(vm, value.scorePath, 0);
+                return value;
+            });
+        },
+        ac: function () {
+            var vm = this,
+                flatFooted = 10,
+                touch = 10,
+                total = 10;
+            _.each(vm.acItems, function (value) {
+                if (!_.isUndefined(value.score)) {
+                    if (value.flatFooted) flatFooted += value.score;
+                    if (value.touch) touch += value.score;
+                    total += value.score;
+                }
+            });
+            return {flatFooted: flatFooted, touch: touch, total: total};
+        },
+        acString: function () {
+            return '10 ' + _.map(this.acItems, function (value) {
+                var sign = (value.score > -1)? '+' : '-';
+                return [sign, Math.abs(value.score), value.type].join(' ');
+            }).join(' ');
+        },
+        classes: function () {
+            var vm = this;
+            return _.map(vm.pc.classes, function (cl) {
+                return _.merge(_.clone(cl), _.find(vm.rules.classes, _.matchesProperty('id', cl.id)));
+            });
+        },
+        hp: function () {
+            var vm = this;
+            return _.sumBy(vm.classes, function (cl) {
+                return cl.levels * (cl.dice + vm.abilities.con.modifier);
+            });
+        },
+        saves: function () {
+            var vm = this;
+            return _.map(vm.rules.saves, function (save, index) {
+
+                // Calculate base
+                save.base = _.sumBy(vm.classes, function (cl) {
+                    return _.includes(save.id, cl.goodSaves)? cl.levels : Math.floor(cl.levels / 2);
+                });
+
+                // Get enhancers
+                save.enhancers = _.filter(vm.pc.enhancers, function (enhancer) {
+                    return (enhancer.type === save.id || enhancer.type === 'saves');
+                });
+
+                // Get the active enhancer by max bonus
+                save.magicBonus = (save.enhancers.length)? _.maxBy(save.enhancers, 'bonus').bonus : 0;
+                save.activeEnhancer = _.findLast(vm.pc.enhancers, {bonus: save.magicBonus});
+
+                // Calculate total
+                save.modifier = save.base + vm.abilities[save.ability].modifier + save.magicBonus;
+
+                // Return the result
+                return save;
+            });
+        },
+        savesString: function () {
+            var vm = this;
+            return _.map(vm.saves, function (value) {
+                var string = value.id.toUpperCase() + ' ' + (value.modifier > -1 ? '+' : '') + value.modifier;
+                if (value.magicBonus) {
+                    string += ' (' + value.activeEnhancer.name + ' +' + value.activeEnhancer.bonus + ')';
+                }
+                return string;
+            }).join(', ');
+        }
+    },
+    watch: {
+        'pc.armor.id': function (armor) {
+            if (!armor) this.pc.armor.enhancement = 0;
+        },
+        'pc.shield.id': function (shield) {
+            if (!shield) this.pc.shield.enhancement = 0;
+        }
+    },
+    created: function () {
+        //this.fetchData();
+    },
+    methods: {
+        fetchData: function () {
+            this.$http.get(characterURI).then(function (response) {
+                this.pc = response.body;
+            });
+        },
+        addLevels: function (index) {
+            var vm = this;
+            vm.pc.classes.push({id: 'fighter', levels: 1});
+        },
+        removeLevels: function (index) {
+            var vm = this;
+            vm.pc.classes.splice(index, 1);
+        }
+    }
+});
+
+</script>
+</html>

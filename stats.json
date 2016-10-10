@@ -1,0 +1,90 @@
+{
+  "name": "Brabor",
+  "size": "huge",
+  "abilities": {
+    "str": 20,
+    "dex": 16,
+    "con": 16,
+    "wis": 8,
+    "int": 5,
+    "car": 3
+  },
+  "armor": {
+    "id": "leather",
+    "enhancement": 5
+  },
+  "shield": {
+    "id": "tower",
+    "enhancement": 5
+  },
+  "naturalArmor": 6,
+  "type": "outsider",
+  "dr": {
+    "reduction": 15,
+    "vulnerability": "good"
+  },
+  "sr": 27,
+
+
+  "hd": 18,
+  "speed": 40,
+  "weapon": {
+    "melee": {
+      "id": "greatsword",
+      "enhancement": 5,
+      "elemental": [
+        "fire",
+        "electric"
+      ],
+      "alignment": [
+        "evil"
+      ],
+      "powerAttack": 5
+    },
+    "ranged": {
+      "id": "longbow",
+      "size": "Huge",
+      "enhancement": 3,
+      "elemental": [
+        "electric"
+      ],
+      "composite": 5
+    }
+  },
+  "enhancers": [
+    {
+      "id": "object",
+      "name": "Gloves of Dexterity",
+      "type": "dex",
+      "bonus": 6
+    },
+    {
+      "id": "object",
+      "name": "Belt of Giant",
+      "type": "str",
+      "bonus": 6
+    },
+    {
+      "id": "object",
+      "name": "Amulet of Health",
+      "type": "con",
+      "bonus": 6
+    },
+    {
+      "id": "object",
+      "name": "Cloak of Resistance",
+      "type": "saves",
+      "bonus": 6
+    },
+    {
+      "id": "object",
+      "name": "Ring of Protection",
+      "type": "deflection",
+      "bonus": 5
+    },
+    {
+      "id": "potion",
+      "name": "Fly"
+    }
+  ]
+}
