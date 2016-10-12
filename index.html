@@ -4,6 +4,16 @@
 <meta charset='utf-8'>
 <title>Dungeon Vault</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css">
+<link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+<style>
+body {
+    font-family: "Roboto","Helvetica Neue",Arial,sans-serif;
+    font-size: 14px;
+}
+.btn, .form-control {
+    font-size: inherit;
+}
+</style>
 </head>
 <body>
 
@@ -12,8 +22,187 @@
 <template id="template">
 
 <div class="container">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                Basics
+            </div>
+            <div class="card-block">
+                <div class="form-group">
+                    <label class="label">Name</label>
+                    <input type="text" v-model="pc.name" class="form-control">
+                </div>
 
-    <div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Size</label>
+                            <select v-model="pc.size" class="form-control">
+                                <option v-for="size in rules.sizes" v-bind:value="size.id">
+                                    {{size.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select v-model="pc.type" class="form-control">
+                                <option v-for="type in rules.types" v-bind:value="type.id">
+                                    {{type.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div v-for="ability in rules.abilities" class="col-sm-2">
+                        <label>{{ability}}</label>
+                        <input type="number" v-model.number="pc.abilities[ability]" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                Levels
+            </div>
+            <div class="card-block">
+                <div v-for="(cl, index) in pc.classes" class="form-group row">
+                    <div class="col-md-4">
+                        <select v-model="cl.id" class="form-control">
+                            <option v-for="value in rules.classes" v-bind:value="value.id">
+                                {{value.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" v-model.number="cl.levels" class="form-control">
+                    </div>
+                    <div class="col-md-4">
+                        <button @click='removeLevels(index)' class="btn btn-danger">&times;</button>
+                    </div>
+                </div>
+                <button @click='addLevels' class="btn btn-primary">Add levels</button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                Defense
+            </div>
+            <div class="card-block">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Armor</label>
+                            <select v-model="pc.armor.id" class="form-control">
+                                <option v-bind:value="false">-</option>
+                                <option v-for="armor in rules.armors" v-bind:value="armor.id">
+                                    {{armor.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Enhancement</label>
+                            <select v-if="pc.armor.id" v-model="pc.armor.enhancement" class="form-control">
+                                <option v-for="bonus in rules.armorEnhancement" v-bind:value="bonus">
+                                    +{{bonus}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Shield</label>
+                            <select v-model="pc.shield.id" class="form-control">
+                                <option v-bind:value="false">-</option>
+                                <option v-for="shield in rules.shields" v-bind:value="shield.id">
+                                    {{shield.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Enhancement</label>
+                            <select v-if="pc.shield.id" v-model="pc.shield.enhancement" class="form-control">
+                                <option v-for="bonus in rules.armorEnhancement" v-bind:value="bonus">
+                                    +{{bonus}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Damage reduction</label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="number" v-model.number="pc.dr.reduction" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <select v-if="pc.dr.reduction" v-model="pc.dr.vulnerability" class="form-control">
+                                <option v-for="vulnerability in rules.vulnerabilities" v-bind:value="vulnerability.id">
+                                    {{vulnerability.id}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Spell resistance</label>
+                            <input type="number" v-model.number="pc.sr" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Natural armor</label>
+                            <input type="number" v-model.number="pc.naturalArmor" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                Enhancers
+            </div>
+            <div class="card-block">
+                <div v-for="(enhancer, index) in pc.enhancers" class="form-group row">
+                    <div class="col-sm-3">
+                        <input type="text" v-model="enhancer.name" class="form-control">
+                    </div>
+                    <div class="col-sm-3">
+                        <select v-model="enhancer.category" class="form-control">
+                            <option v-for="category in rules.enhancers.categories" v-bind:value="category.id">
+                                {{category.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <select v-model="enhancer.type" class="form-control">
+                            <option v-for="type in rules.enhancers.types" v-bind:value="type">
+                                {{type}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="number" v-model.number="enhancer.bonus" class="form-control">
+                    </div>
+                    <div class="col-sm-1">
+                        <button @click='removeEnhancer(index)' class="btn btn-danger">&times;</button>
+                    </div>
+                </div>
+                <button @click='addEnhancer' class="btn btn-primary">Add enhancer</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
         <p><strong>{{pc.name}}</strong><br>{{pc.size}} {{pc.type}}</p>
         <p>HP: {{hp}}</p>
         <p>{{abilitiesString}}</p>
@@ -24,181 +213,6 @@
         <p v-if='pc.dr.reduction'>DR: {{pc.dr.reduction}}/{{pc.dr.vulnerability}}</p>
         <p v-if='pc.sr'>SR: {{pc.sr}}</p>
     </div>
-
-    <!-- Name -->
-    <div class="form-group">
-        <label class="label">Name</label>
-        <input type="text" v-model="pc.name" class="form-control">
-    </div>
-
-    <!-- Size -->
-    <div class="form-group">
-        <label>Size</label>
-        <select v-model="pc.size" class="form-control">
-            <option v-for="size in rules.sizes" v-bind:value="size.id">
-                {{size.name}}
-            </option>
-        </select>
-    </div>
-
-    <!-- Type -->
-    <div class="form-group">
-        <label>Type</label>
-        <select v-model="pc.type" class="form-control">
-            <option v-for="type in rules.types" v-bind:value="type.id">
-                {{type.name}}
-            </option>
-        </select>
-    </div>
-
-    <!-- Stats -->
-    <div class="form-group row">
-        <div v-for="ability in rules.abilities" class="col-sm-2">
-            <label>{{ability}}</label>
-            <input type="number" v-model.number="pc.abilities[ability]" class="form-control">
-        </div>
-    </div>
-
-    <!-- Classes -->
-    <div class="card">
-        <div class="card-header">
-            Levels
-        </div>
-        <div class="card-block">
-            <div v-for="(cl, index) in pc.classes" class="form-group row">
-                <div class="col-md-4">
-                    <select v-model="cl.id" class="form-control">
-                        <option v-for="value in rules.classes" v-bind:value="value.id">
-                            {{value.name}}
-                        </option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <input type="number" v-model.number="cl.levels" class="form-control">
-                </div>
-                <div class="col-md-4">
-                    <button @click='removeLevels(index)' class="btn btn-danger">&times;</button>
-                </div>
-            </div>
-            <button @click='addLevels' class="btn btn-primary">Add levels</button>
-        </div>
-    </div>
-
-    <!-- Armor -->
-    <div class="card">
-        <div class="card-header">
-            Defense
-        </div>
-        <div class="card-block">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <select v-model="pc.armor.id" class="form-control">
-                            <option v-bind:value="false">-</option>
-                            <option v-for="armor in rules.armors" v-bind:value="armor.id">
-                                {{armor.name}}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <select v-if="pc.armor.id" v-model="pc.armor.enhancement" class="form-control">
-                            <option v-for="bonus in rules.armorEnhancement" v-bind:value="bonus">
-                                +{{bonus}}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <select v-model="pc.shield.id" class="form-control">
-                            <option v-bind:value="false">-</option>
-                            <option v-for="shield in rules.shields" v-bind:value="shield.id">
-                                {{shield.name}}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <select v-if="pc.shield.id" v-model="pc.shield.enhancement" class="form-control">
-                            <option v-for="bonus in rules.armorEnhancement" v-bind:value="bonus">
-                                +{{bonus}}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Damage Reduction -->
-    <div class="form-group">
-        <label>Damage reduction</label>
-        <div class="row">
-            <div class="col-md-3">
-                <input type="number" v-model.number="pc.dr.reduction" class="form-control">
-            </div>
-            <div class="col-md-3">
-                <select v-if="pc.dr.reduction" v-model="pc.dr.vulnerability" class="form-control">
-                    <option v-for="vulnerability in rules.vulnerabilities" v-bind:value="vulnerability.id">
-                        {{vulnerability.id}}
-                    </option>
-                </select>
-            </div>
-        </div>
-    </div>
-
-    <!-- Spell Resistance -->
-    <div class="form-group">
-        <label>Spell resistance</label>
-        <input type="number" v-model.number="pc.sr" class="form-control">
-    </div>
-
-    <!-- Natural armor -->
-    <div class="form-group">
-        <label>Natural armor</label>
-        <input type="number" v-model.number="pc.naturalArmor" class="form-control">
-    </div>
-
-    <!-- Enhancers -->
-    <div class="card">
-        <div class="card-header">
-            Enhancers
-        </div>
-        <div class="card-block">
-            <div v-for="(enhancer, index) in pc.enhancers" class="form-group row">
-                <div class="col-sm-3">
-                    <input type="text" v-model="enhancer.name" class="form-control">
-                </div>
-                <div class="col-sm-3">
-                    <select v-model="enhancer.category" class="form-control">
-                        <option v-for="category in rules.enhancers.categories" v-bind:value="category.id">
-                            {{category.name}}
-                        </option>
-                    </select>
-                </div>
-                <div class="col-sm-3">
-                    <select v-model="enhancer.type" class="form-control">
-                        <option v-for="type in rules.enhancers.types" v-bind:value="type">
-                            {{type}}
-                        </option>
-                    </select>
-                </div>
-                <div class="col-sm-2">
-                    <input type="number" v-model.number="enhancer.bonus" class="form-control">
-                </div>
-                <div class="col-sm-1">
-                    <button @click='removeEnhancer(index)' class="btn btn-danger">&times;</button>
-                </div>
-            </div>
-            <button @click='addEnhancer' class="btn btn-primary">Add enhancer</button>
-        </div>
-    </div>
-
 </div>
 
 </template>
