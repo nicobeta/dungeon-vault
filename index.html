@@ -243,6 +243,32 @@ var vm = new Vue({
                 car: 10,
                 int: 10
             },
+            weapons: {
+                melee: [
+                    {
+                        id: "greatsword",
+                        enhancement: 5,
+                        elemental: [
+                            "fire",
+                            "electric"
+                        ],
+                        alignment: [
+                            "evil"
+                        ],
+                        powerAttack: 5
+                    }
+                ],
+                ranged: [
+                    {
+                        id: "longbow",
+                        enhancement: 3,
+                        elemental: [
+                            "electric"
+                        ],
+                        composite: 5
+                    }
+                ]
+            },
             armor: {
               id: "leather",
               enhancement: 5
@@ -448,6 +474,82 @@ var vm = new Vue({
                 }
                 return string;
             }).join(', ');
+        },
+        baseAttack: function () {
+            var vm = this;
+            return _.sum(_.map(vm.classes, function (cl) {
+                return Math.floor(cl.attack * cl.levels);
+            }));
+        },
+        attackCount: function () {
+            var vm = this;
+            var count = Math.floor(vm.baseAttack / 5);
+            if (count < 1) count = 1;
+            if (count > 4) count = 4;
+            return count;
+        },
+        attacks: function () {
+            var vm = this,
+                attack = {};
+
+            return _.mapValues(vm.pc.weapons, function (weapons, weaponsType) {
+                return _.map(weapons, function (weapon) {
+                    var str = 0,
+                        powerAttack = 0;
+
+                    // Set weapon
+                    weapon = _.merge(weapon, _.find(vm.rules.weapons, _.matchesProperty('id', weapon.id)));
+                    weapon.dice = vm.rules.damageIncrement[
+                        _.indexOf(vm.rules.damageIncrement, weapon.dice) + (vm.size.scale - 4)
+                    ];
+
+                    // Set attack ability
+                    weapon.attackAbility = (weapon.type === 'melee')? 'str' : 'dex';
+
+                    // Set max attack bonus
+                    weapon.attackFactors = {
+                        baseAttack: vm.baseAttack,
+                        ability: vm.abilities[weapon.attackAbility].modifier,
+                        size: vm.size.modifier,
+                        enhancement: weapon.enhancement,
+                        powerAttack: _.isUndefined(weapon.powerAttack)? 0 : 0 - weapon.powerAttack
+                    };
+                    weapon.max = _.sum(_.values(weapon.attackFactors));
+
+                    // Set full attack array
+                    weapon.fullAttack = [];
+                    for (i = 0; i < vm.attackCount; i++) {
+                        weapon.fullAttack.push(weapon.max - (5 * i));
+                    }
+
+                    // Calculate strength
+                    if (weapon.type === 'melee') {
+                        str = vm.abilities.str.modifier;
+                    } else if (weapon.composite !== undefined && weapon.composite) {
+                        str = _.min([vm.abilities.str.modifier, weapon.composite]);
+                    }
+
+                    // Set damage
+                    weapon.damage = {
+                        str: str,
+                        powerAttackBonus: (weapon.powerAttack !== undefined)? weapon.powerAttack : 0,
+                        dice: weapon.dice,
+                        enhancement: weapon.enhancement
+                    };
+
+                    // Calculate extra strength for melee attacks
+                    if (weapon.type === 'melee') {
+                        weapon.damage.str = (weapon.twoHands)? Math.floor(str * 1.5) : str;
+                        weapon.damage.powerAttackBonus = (weapon.twoHands && weapon.powerAttack)? weapon.powerAttack * 2 : weapon.powerAttack;
+                    }
+
+                    // Get minimum fixed damage
+                    weapon.damage.fixed = weapon.damage.str + weapon.enhancement + weapon.damage.powerAttackBonus;
+
+                    // Return computed weapon stats
+                    return weapon;
+                });
+            });
         }
     },
     watch: {
