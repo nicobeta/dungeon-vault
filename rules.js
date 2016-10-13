@@ -76,10 +76,6 @@ var rules = {
     weaponAlignment: [
         'evil', 'chaos', 'law', 'good'
     ],
-    attackTypes: [
-        {type: 'melee', ability: 'str'},
-        {type: 'ranged', ability: 'dex'}
-    ],
     vulnerabilities: [
         {id: '-'},
         {id: '+1'},
