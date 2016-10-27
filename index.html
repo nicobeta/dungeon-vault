@@ -3,15 +3,31 @@
 <head>
 <meta charset='utf-8'>
 <title>Dungeon Vault</title>
+
+<!-- Mobile Meta -->
+<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no'>
+<meta name='mobile-web-app-capable' content='yes'>
+<meta name='apple-mobile-web-app-capable' content='yes'>
+<meta name='apple-mobile-web-app-status-bar-style' content='black'>
+
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css">
 <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel='stylesheet'>
 <style>
 body {
     font-family: "Roboto","Helvetica Neue",Arial,sans-serif;
     font-size: 14px;
+    margin-top: 40px;
 }
 .btn, .form-control {
     font-size: inherit;
+}
+.text-muted {
+    color: #AAA;
+}
+select,
+input {
+    margin-bottom: 1rem;
 }
 </style>
 </head>
@@ -21,7 +37,7 @@ body {
 
 <template id="template">
 
-<div class="container">
+<div class="container-fluid">
     <div class="col-md-6">
         <div class="card">
             <div class="card-header">
@@ -69,18 +85,20 @@ body {
             </div>
             <div class="card-block">
                 <div v-for="(cl, index) in pc.classes" class="form-group row">
-                    <div class="col-md-4">
+                    <div class="col-md-8">
                         <select v-model="cl.id" class="form-control">
                             <option v-for="value in rules.classes" v-bind:value="value.id">
                                 {{value.name}}
                             </option>
                         </select>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <input type="number" v-model.number="cl.levels" class="form-control">
                     </div>
-                    <div class="col-md-4">
-                        <button @click='removeLevels(index)' class="btn btn-danger">&times;</button>
+                    <div class="col-md-2">
+                        <button @click='removeLevels(index)' class="btn btn-danger">
+                            <i class="fa fa-trash"></i>
+                        </button>
                     </div>
                 </div>
                 <button @click='addLevels' class="btn btn-primary">Add levels</button>
@@ -170,32 +188,166 @@ body {
         </div>
         <div class="card">
             <div class="card-header">
+                Attack
+            </div>
+            <div class="card-block">
+                <h5>Melee</h5>
+                <div v-for="(weapon, index) in pc.weapons.melee">
+                    <div class="card">
+                        <div class="card-block">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Weapon</label>
+                                        <select v-model="weapon.id" class="form-control">
+                                            <option v-bind:value="false">-</option>
+                                            <option v-for="weapon in rules.weapons.melee" v-bind:value="weapon.id">
+                                                {{weapon.name}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Enhancement</label>
+                                        <select v-model="weapon.enhancement" class="form-control">
+                                            <option v-for="enhancement in rules.weaponEnhancement" v-bind:value="enhancement">
+                                                +{{enhancement}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Power Attack</label>
+                                        <select v-model="weapon.powerAttack" class="form-control">
+                                            <option v-bind:value="0">0</option>
+                                            <option v-for="n in baseAttack" v-bind:value="n">
+                                                {{n}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div v-for="elemental in rules.weaponElemental" class="col-md-3">
+                                    <label class="form-check-inline">
+                                        <input class="form-check-input" type="checkbox" v-bind:value="elemental" v-model="weapon.elemental"> {{elemental}}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div v-for="alignment in rules.weaponAlignment" class="col-md-3">
+                                    <label class="form-check-inline">
+                                        <input class="form-check-input" type="checkbox" v-bind:value="alignment" v-model="weapon.alignment"> {{alignment}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button @click='removeMeleeWeapon(index)' class="btn btn-danger">Remove weapon</button>
+                        </div>
+                    </div>
+                </div>
+                <button @click='addMeleeWeapon' class="btn btn-primary">Add melee weapon</button>
+            </div>
+            <div class="card-block">
+                <h5>Ranged</h5>
+                <div v-for="(weapon, index) in pc.weapons.ranged">
+                    <div class="card">
+                        <div class="card-block">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Weapon</label>
+                                        <select v-model="weapon.id" class="form-control">
+                                            <option v-bind:value="false">-</option>
+                                            <option v-for="weapon in rules.weapons.ranged" v-bind:value="weapon.id">
+                                                {{weapon.name}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Enhancement</label>
+                                        <select v-model="weapon.enhancement" class="form-control">
+                                            <option v-for="enhancement in rules.weaponEnhancement" v-bind:value="enhancement">
+                                                +{{enhancement}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Composite</label>
+                                        <select v-model="weapon.composite" class="form-control">
+                                            <option v-for="n in 10" v-bind:value="n">
+                                                {{n}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div v-for="elemental in rules.weaponElemental" class="col-md-3">
+                                    <label class="form-check-inline">
+                                        <input class="form-check-input" type="checkbox" v-bind:value="elemental" v-model="weapon.elemental"> {{elemental}}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div v-for="alignment in rules.weaponAlignment" class="col-md-3">
+                                    <label class="form-check-inline">
+                                        <input class="form-check-input" type="checkbox" v-bind:value="alignment" v-model="weapon.alignment"> {{alignment}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button @click='removeRangedWeapon(index)' class="btn btn-danger">Remove weapon</button>
+                        </div>
+                    </div>
+                </div>
+                <button @click='addRangedWeapon' class="btn btn-primary">Add ranged weapon</button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
                 Enhancers
             </div>
             <div class="card-block">
-                <div v-for="(enhancer, index) in pc.enhancers" class="form-group row">
-                    <div class="col-sm-3">
-                        <input type="text" v-model="enhancer.name" class="form-control">
-                    </div>
-                    <div class="col-sm-3">
-                        <select v-model="enhancer.category" class="form-control">
-                            <option v-for="category in rules.enhancers.categories" v-bind:value="category.id">
-                                {{category.name}}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-sm-3">
-                        <select v-model="enhancer.type" class="form-control">
-                            <option v-for="type in rules.enhancers.types" v-bind:value="type">
-                                {{type}}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                        <input type="number" v-model.number="enhancer.bonus" class="form-control">
-                    </div>
-                    <div class="col-sm-1">
-                        <button @click='removeEnhancer(index)' class="btn btn-danger">&times;</button>
+                <div v-for="(enhancer, index) in pc.enhancers">
+                    <div class="card">
+                        <div class="card-block">
+                            <div class="form-group">
+                                <input type="text" v-model="enhancer.name" class="form-control">
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <select v-model="enhancer.category" class="form-control">
+                                        <option v-for="category in rules.enhancers.categories" v-bind:value="category.id">
+                                            {{category.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <select v-model="enhancer.type" class="form-control">
+                                        <option v-for="type in rules.enhancers.types" v-bind:value="type">
+                                            {{type}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="number" v-model.number="enhancer.bonus" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button @click='removeEnhancer(index)' class="btn btn-danger">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <button @click='addEnhancer' class="btn btn-primary">Add enhancer</button>
@@ -203,19 +355,172 @@ body {
         </div>
     </div>
     <div class="col-md-6">
-        <p><strong>{{pc.name}}</strong><br>{{pc.size}} {{pc.type}}</p>
-        <p>HP: {{hp}}</p>
-        <p>{{abilitiesString}}</p>
-        <p>AC: {{ac.total}}, touch {{ac.touch}}, flat-footed {{ac.flatFooted}} ({{acString}})</p>
-        <p>
-            Saves: {{savesString}}
-        </p>
-        <p v-if='pc.dr.reduction'>DR: {{pc.dr.reduction}}/{{pc.dr.vulnerability}}</p>
-        <p v-if='pc.sr'>SR: {{pc.sr}}</p>
+        <div class="card">
+            <div class="card-header">
+                Basics
+            </div>
+            <div class="card-block">
+                <p>
+                    <strong>{{pc.name}}</strong><br>{{pc.size}} {{pc.type}}
+                </p>
+                <p>
+                    <strong>HP:</strong> {{hp}}
+                </p>
+                <p>
+                    {{abilitiesString}}
+                </p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                Defense
+            </div>
+            <div class="card-block">
+                <p>
+                    <strong>AC:</strong> {{ac.total}}, touch {{ac.touch}}, flat-footed {{ac.flatFooted}} ({{acString}})
+                </p>
+                <p>
+                    <strong>Saves:</strong> {{savesString}}
+                </p>
+                <p v-if='pc.dr.reduction'>
+                    <strong>DR:</strong> {{pc.dr.reduction}}/{{pc.dr.vulnerability}}
+                </p>
+                <p v-if='pc.sr'>
+                    <strong>SR:</strong> {{pc.sr}}
+                </p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                Attack
+            </div>
+            <div class="card-block">
+                <div>
+                    <h5>
+                        Melee
+                    </h5>
+                    <div v-for='weapon in attacks.melee' class='card card-block'>
+                        <div>
+                            <strong>
+                                Weapon:
+                            </strong>
+                            <span v-if='weapon.enhancement'>
+                                +{{weapon.enhancement}}
+                            </span>
+                            <span v-for='elemental in weapon.elemental'>
+                                {{elemental}}
+                            </span>
+                            <span v-for='alignment in weapon.alignment'>
+                                {{alignment}}
+                            </span>
+                            <span>
+                                {{weapon.name}}
+                            </span>
+                        </div>
+                        <div>
+                            <strong>
+                                Attack:
+                            </strong>
+                            <span>
+                                {{weapon.fullAttack.join(' / ')}}
+                            </span>
+                        </div>
+                        <div class="text-muted" v-if="showInfo">
+                            {{weapon.attackFactorsString}}
+                        </div>
+                        <div>
+                            <strong>
+                                Damage:
+                            </strong>
+                            <span>
+                                {{weapon.damage.fixed}}
+                            </span>
+                            <span>
+                                 + {{weapon.damage.dice}} weapon
+                            </span>
+                            <span v-for='elemental in weapon.elemental'>
+                                + 1d6 {{elemental}}
+                            </span>
+                            <span v-for='alignment in weapon.alignment'>
+                                + 2d6 {{alignment}}
+                            </span>
+                        </div>
+                        <div class="text-muted" v-if="showInfo">
+                            {{weapon.damageFactorsString}}
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h5>
+                        Ranged
+                    </h5>
+                    <div v-for='weapon in attacks.ranged' class="card card-block">
+                        <div>
+                            <strong>
+                                Weapon:
+                            </strong>
+                            <span v-if='weapon.enhancement'>
+                                +{{weapon.enhancement}}
+                            </span>
+                            <span v-for='elemental in weapon.elemental'>
+                                {{elemental}}
+                            </span>
+                            <span v-for='alignment in weapon.alignment'>
+                                {{alignment}}
+                            </span>
+                            <span>
+                                {{weapon.name}}
+                            </span>
+                        </div>
+                        <div>
+                            <strong>
+                                Attack:
+                            </strong>
+                            <span>
+                                {{weapon.fullAttack.join(' / ')}}
+                            </span>
+                        </div>
+                        <div class="text-muted" v-if="showInfo">
+                            {{weapon.attackFactorsString}}
+                        </div>
+                        <div>
+                            <strong>
+                                Damage:
+                            </strong>
+                            <span>
+                                {{weapon.damage.fixed}}
+                            </span>
+                            <span>
+                                 + {{weapon.damage.dice}} weapon
+                            </span>
+                            <span v-for='elemental in weapon.elemental'>
+                                + 1d6 {{elemental}}
+                            </span>
+                            <span v-for='alignment in weapon.alignment'>
+                                + 2d6 {{alignment}}
+                            </span>
+                        </div>
+                        <div class="text-muted" v-if="showInfo">
+                            {{weapon.damageFactorsString}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div>
+            <button class="btn btn-primary" @click='showInfo = !showInfo'>
+                <i class="fa fa-info-circle"></i>
+                <span v-if="showInfo">Hide details</span>
+                <span v-else>Show details</span>
+            </button>
+        </div>
     </div>
 </div>
 
 </template>
+
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.1/vue.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.0.3/vue-resource.js"></script>
@@ -230,6 +535,7 @@ var vm = new Vue({
     el: '#app',
     template: '#template',
     data: {
+        showInfo: false,
         pc: {
             name: 'Unknown',
             size: 'medium',
@@ -252,6 +558,14 @@ var vm = new Vue({
                             "fire",
                             "electric"
                         ],
+                        alignment: [
+                            "evil"
+                        ],
+                        powerAttack: 5
+                    },
+                    {
+                        id: "shortsword",
+                        enhancement: 1,
                         alignment: [
                             "evil"
                         ],
@@ -498,7 +812,7 @@ var vm = new Vue({
                         powerAttack = 0;
 
                     // Set weapon
-                    weapon = _.merge(weapon, _.find(vm.rules.weapons, _.matchesProperty('id', weapon.id)));
+                    weapon = _.merge(weapon, _.find(vm.rules.weapons[weaponsType], _.matchesProperty('id', weapon.id)));
                     weapon.dice = vm.rules.damageIncrement[
                         _.indexOf(vm.rules.damageIncrement, weapon.dice) + (vm.size.scale - 4)
                     ];
@@ -519,7 +833,7 @@ var vm = new Vue({
                     // Set full attack array
                     weapon.fullAttack = [];
                     for (i = 0; i < vm.attackCount; i++) {
-                        weapon.fullAttack.push(weapon.max - (5 * i));
+                        weapon.fullAttack.push('+' + (weapon.max - (5 * i)));
                     }
 
                     // Calculate strength
@@ -544,7 +858,11 @@ var vm = new Vue({
                     }
 
                     // Get minimum fixed damage
-                    weapon.damage.fixed = weapon.damage.str + weapon.enhancement + weapon.damage.powerAttackBonus;
+                    weapon.damage.fixed = weapon.damage.str + weapon.enhancement + (weapon.damage.powerAttackBonus? weapon.damage.powerAttackBonus : 0);
+
+                    // Get attack and damage strings
+                    weapon.attackFactorsString = vm.attackFactorsString(weapon);
+                    weapon.damageFactorsString = vm.damageFactorsString(weapon);
 
                     // Return computed weapon stats
                     return weapon;
@@ -577,6 +895,22 @@ var vm = new Vue({
             var vm = this;
             vm.pc.classes.splice(index, 1);
         },
+        addMeleeWeapon: function (index) {
+            var vm = this;
+            vm.pc.weapons.melee.push({id: 'shortsword', enhancement: 0, powerAttack: 0});
+        },
+        removeMeleeWeapon: function (index) {
+            var vm = this;
+            vm.pc.weapons.melee.splice(index, 1);
+        },
+        addRangedWeapon: function (index) {
+            var vm = this;
+            vm.pc.weapons.ranged.push({id: 'shortbow', enhancement: 0, composite: 0});
+        },
+        removeRangedWeapon: function (index) {
+            var vm = this;
+            vm.pc.weapons.ranged.splice(index, 1);
+        },
         addEnhancer: function (index) {
             var vm = this;
             vm.pc.enhancers.push({category: 'object', name: '', type: '-', bonus: 0});
@@ -584,6 +918,64 @@ var vm = new Vue({
         removeEnhancer: function (index) {
             var vm = this;
             vm.pc.enhancers.splice(index, 1);
+        },
+
+
+
+
+
+        attackFactorsString: function (weapon) {
+            var vm = this,
+                factors = [];
+            factors = [
+                weapon.attackFactors.baseAttack + ' base attack',
+                vm.modifier(weapon.attackFactors.ability) + ' ' + weapon.attackAbility,
+                vm.modifier(weapon.attackFactors.size) + ' size'
+            ];
+            if (weapon.attackFactors.enhancement) {
+                factors.push('+ ' + weapon.attackFactors.enhancement + ' enhancement');
+            }
+            if (weapon.attackFactors.powerAttack) {
+                factors.push(vm.modifier(weapon.attackFactors.powerAttack) + ' power attack');
+            }
+            return factors.join(' ');
+        },
+        damageFactorsString: function (weapon) {
+            var vm = this,
+                factors = [];
+            factors = [
+                vm.modifier(weapon.damage.str) + ' str'
+            ];
+            if (weapon.damage.enhancement) {
+                factors.push('+ ' + weapon.damage.enhancement + ' enhancement');
+            }
+            if (weapon.damage.powerAttackBonus !== undefined) {
+                factors.push(vm.modifier(weapon.damage.powerAttackBonus) + ' power attack');
+            }
+            if (weapon.damage.size !== undefined) {
+                factors.push(vm.modifier(weapon.damage.size) + ' size');
+            }
+            return factors.join(' ');
+        },
+        modifier: function (value) {
+            var html = '',
+                sign = '+';
+            if (_.isUndefined(value)) {
+                return html;
+            }
+            value = parseInt(value, 10);
+            if (value === 0) {
+                return '+ 0 ';
+            }
+            if (value < 0) {
+                sign = '-';
+            }
+            html = sign + ' ' + Math.abs(value);
+            return html;
+        },
+        toggleShowInfo: function (weapon) {
+            console.log(weapon);
+            weapon.showInfo = !weapon.showInfo;
         }
     }
 });

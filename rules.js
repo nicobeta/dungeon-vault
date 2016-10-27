@@ -46,21 +46,25 @@ var rules = {
         {id: 'sorcerer', name: 'Sorcerer', dice: 4, attack: 0.5, goodSaves: ['will']},
         {id: 'wizard', name: 'Wizard', dice: 4, attack: 0.5, goodSaves: ['will']}
     ],
-    weapons: [
-        {id: 'shortsword', name: 'Shortsword', dice: '1d6', type: 'melee', twoHands: false},
-        {id: 'longsword', name: 'Longsword', dice: '1d8', type: 'melee', twoHands: true},
-        {id: 'greatsword', name: 'Greatsword', dice: '2d6', type: 'melee', twoHands: true},
-        {id: 'shortbow', name: 'Shortbow', dice: '1d6', type: 'ranged'},
-        {id: 'longbow', name: 'Longbow', dice: '1d8', type: 'ranged'},
-        {id: 'hand-crossbow', name: 'Hand crossbow', dice: '1d4', type: 'ranged'},
-        {id: 'light-crossbow', name: 'Light crossbow', dice: '1d8', type: 'ranged'},
-        {id: 'heavy-crossbow', name: 'Heavy crossbow', dice: '1d10', type: 'ranged'},
-        {id: 'repeating-heavy-crossbow', name: 'Repeating heavy crossbow', dice: '1d10', type: 'ranged'},
-        {id: 'repeating-light-crossbow', name: 'Repeating light crossbow', dice: '1d8', type: 'ranged'},
-        {id: 'javelin', name: 'Javelin', dice: '1d6', type: 'ranged'},
-        {id: 'dart', name: 'Dart', dice: '1d4', type: 'ranged'},
-        {id: 'sling', name: 'Sling', dice: '1d4', type: 'ranged'}
-    ],
+    weapons: {
+        melee: [
+            {id: 'shortsword', name: 'Shortsword', dice: '1d6', type: 'melee', twoHands: false},
+            {id: 'longsword', name: 'Longsword', dice: '1d8', type: 'melee', twoHands: true},
+            {id: 'greatsword', name: 'Greatsword', dice: '2d6', type: 'melee', twoHands: true}
+        ],
+        ranged: [
+            {id: 'shortbow', name: 'Shortbow', dice: '1d6', type: 'ranged'},
+            {id: 'longbow', name: 'Longbow', dice: '1d8', type: 'ranged'},
+            {id: 'hand-crossbow', name: 'Hand crossbow', dice: '1d4', type: 'ranged'},
+            {id: 'light-crossbow', name: 'Light crossbow', dice: '1d8', type: 'ranged'},
+            {id: 'heavy-crossbow', name: 'Heavy crossbow', dice: '1d10', type: 'ranged'},
+            {id: 'repeating-heavy-crossbow', name: 'Repeating heavy crossbow', dice: '1d10', type: 'ranged'},
+            {id: 'repeating-light-crossbow', name: 'Repeating light crossbow', dice: '1d8', type: 'ranged'},
+            {id: 'javelin', name: 'Javelin', dice: '1d6', type: 'ranged'},
+            {id: 'dart', name: 'Dart', dice: '1d4', type: 'ranged'},
+            {id: 'sling', name: 'Sling', dice: '1d4', type: 'ranged'}
+        ]
+    },
     damageIncrement: [
         '1', '1d2', '1d3', '1d4', '1d6', '1d8', '1d10', '2d6', '3d6', '4d6', '6d6', '8d6'
     ],
