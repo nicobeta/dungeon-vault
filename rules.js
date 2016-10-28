@@ -48,10 +48,10 @@ var rules = {
     ],
     weapons: {
         melee: [
-            {id: 'shortsword', name: 'Shortsword', dice: '1d6', type: 'melee', twoHands: false, canHaveFinesse: false},
-            {id: 'longsword', name: 'Longsword', dice: '1d8', type: 'melee', twoHands: true, canHaveFinesse: false},
-            {id: 'greatsword', name: 'Greatsword', dice: '2d6', type: 'melee', twoHands: true, canHaveFinesse: false},
-            {id: 'rapier', name: 'Rapier', dice: '1d6', type: 'melee', twoHands: false, canHaveFinesse: true}
+            {id: 'shortsword', name: 'Shortsword', dice: '1d6', type: 'melee', twoHands: false, finesseable: false},
+            {id: 'longsword', name: 'Longsword', dice: '1d8', type: 'melee', twoHands: true, finesseable: false},
+            {id: 'greatsword', name: 'Greatsword', dice: '2d6', type: 'melee', twoHands: true, finesseable: false},
+            {id: 'rapier', name: 'Rapier', dice: '1d6', type: 'melee', twoHands: false, finesseable: true}
         ],
         ranged: [
             {id: 'shortbow', name: 'Shortbow', dice: '1d6', type: 'ranged'},
@@ -133,5 +133,7 @@ var rules = {
         types: [
             '-', 'str', 'dex', 'con', 'wis', 'int', 'car', 'saves', 'deflection', 'armor', 'shield', 'skills'
         ]
-    }
+    },
+    baseMeleeWeapon: {id: 'shortsword', enhancement: 0, elemental: [], alignment: [], focus: 0, specialization: 0, masterwork: true, powerAttack: 0, finesse: false},
+    baseRangedWeapon: {id: 'shortbow', enhancement: 0, elemental: [], alignment: [], focus: 0, specialization: 0, masterwork: true, composite: 0}
 }

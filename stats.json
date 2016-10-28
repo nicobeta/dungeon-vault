@@ -1,13 +1,62 @@
 {
-  "name": "Brabor",
-  "size": "huge",
+  "name": "Unknown",
+  "size": "medium",
+  "type": "humanoid",
+  "naturalArmor": 6,
   "abilities": {
-    "str": 20,
-    "dex": 16,
+    "str": 12,
+    "dex": 18,
     "con": 16,
-    "wis": 8,
-    "int": 5,
-    "car": 3
+    "wis": 13,
+    "car": 10,
+    "int": 8
+  },
+  "flanking": true,
+  "haste": true,
+  "majorHaste": true,
+  "weapons": {
+    "melee": [
+      {
+        "id": "greatsword",
+        "enhancement": 5,
+        "elemental": [
+          "fire",
+          "electric"
+        ],
+        "alignment": [
+          "evil"
+        ],
+        "focus": 0,
+        "specialization": 0,
+        "masterwork": true,
+        "powerAttack": 5,
+        "finesse": false
+      },
+      {
+        "id": "rapier",
+        "enhancement": 1,
+        "elemental": [],
+        "alignment": [],
+        "focus": 0,
+        "specialization": 0,
+        "masterwork": true,
+        "powerAttack": 0,
+        "finesse": true
+      }
+    ],
+    "ranged": [
+      {
+        "id": "longbow",
+        "enhancement": 3,
+        "elemental": [
+          "electric"
+        ],
+        "alignment": [],
+        "composite": 5,
+        "focus": 0,
+        "specialization": 0
+      }
+    ]
   },
   "armor": {
     "id": "leather",
@@ -17,74 +66,63 @@
     "id": "tower",
     "enhancement": 5
   },
-  "naturalArmor": 6,
-  "type": "outsider",
   "dr": {
     "reduction": 15,
     "vulnerability": "good"
   },
   "sr": 27,
-
-
-  "hd": 18,
-  "speed": 40,
-  "weapon": {
-    "melee": {
-      "id": "greatsword",
-      "enhancement": 5,
-      "elemental": [
-        "fire",
-        "electric"
-      ],
-      "alignment": [
-        "evil"
-      ],
-      "powerAttack": 5
-    },
-    "ranged": {
-      "id": "longbow",
-      "size": "Huge",
-      "enhancement": 3,
-      "elemental": [
-        "electric"
-      ],
-      "composite": 5
-    }
-  },
   "enhancers": [
     {
-      "id": "object",
+      "category": "object",
       "name": "Gloves of Dexterity",
       "type": "dex",
       "bonus": 6
     },
     {
-      "id": "object",
+      "category": "object",
       "name": "Belt of Giant",
       "type": "str",
       "bonus": 6
     },
     {
-      "id": "object",
+      "category": "object",
       "name": "Amulet of Health",
       "type": "con",
       "bonus": 6
     },
     {
-      "id": "object",
+      "category": "object",
       "name": "Cloak of Resistance",
       "type": "saves",
       "bonus": 6
     },
     {
-      "id": "object",
+      "category": "object",
       "name": "Ring of Protection",
       "type": "deflection",
       "bonus": 5
     },
     {
-      "id": "potion",
-      "name": "Fly"
+      "category": "object",
+      "name": "Armor Scuffs",
+      "type": "armor",
+      "bonus": 6
+    },
+    {
+      "category": "potion",
+      "name": "Mage Armor",
+      "type": "armor",
+      "bonus": 4
+    }
+  ],
+  "classes": [
+    {
+      "id": "fighter",
+      "levels": 4
+    },
+    {
+      "id": "cleric",
+      "levels": 4
     }
   ]
 }
