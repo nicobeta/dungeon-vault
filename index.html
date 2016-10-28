@@ -29,6 +29,9 @@ select,
 input {
     margin-bottom: 1rem;
 }
+.btn i {
+    margin-right: .5rem;
+}
 </style>
 </head>
 <body>
@@ -48,7 +51,6 @@ input {
                     <label class="label">Name</label>
                     <input type="text" v-model="pc.name" class="form-control">
                 </div>
-
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -232,14 +234,21 @@ input {
                             <div class="row">
                                 <div v-for="elemental in rules.weaponElemental" class="col-md-3">
                                     <label class="form-check-inline">
-                                        <input class="form-check-input" type="checkbox" v-bind:value="elemental" v-model="weapon.elemental"> {{elemental}}
+                                        <input class="form-check-input" type="checkbox" v-bind:value="elemental" v-model="weapon.elemental"> {{_.capitalize(elemental)}}
                                     </label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div v-for="alignment in rules.weaponAlignment" class="col-md-3">
                                     <label class="form-check-inline">
-                                        <input class="form-check-input" type="checkbox" v-bind:value="alignment" v-model="weapon.alignment"> {{alignment}}
+                                        <input class="form-check-input" type="checkbox" v-bind:value="alignment" v-model="weapon.alignment"> {{_.capitalize(alignment)}}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-check-inline">
+                                        <input class="form-check-input" type="checkbox" value="1" v-model="weapon.finesse"> Finesse
                                     </label>
                                 </div>
                             </div>
@@ -292,14 +301,14 @@ input {
                             <div class="row">
                                 <div v-for="elemental in rules.weaponElemental" class="col-md-3">
                                     <label class="form-check-inline">
-                                        <input class="form-check-input" type="checkbox" v-bind:value="elemental" v-model="weapon.elemental"> {{elemental}}
+                                        <input class="form-check-input" type="checkbox" v-bind:value="elemental" v-model="weapon.elemental"> {{_.capitalize(elemental)}}
                                     </label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div v-for="alignment in rules.weaponAlignment" class="col-md-3">
                                     <label class="form-check-inline">
-                                        <input class="form-check-input" type="checkbox" v-bind:value="alignment" v-model="weapon.alignment"> {{alignment}}
+                                        <input class="form-check-input" type="checkbox" v-bind:value="alignment" v-model="weapon.alignment"> {{_.capitalize(alignment)}}
                                     </label>
                                 </div>
                             </div>
@@ -514,6 +523,21 @@ input {
                 <span v-if="showInfo">Hide details</span>
                 <span v-else>Show details</span>
             </button>
+            <button class="btn btn-primary" @click='pc.haste = !pc.haste'>
+                <i class="fa fa-bolt"></i>
+                <span v-if="pc.haste">Stop haste</span>
+                <span v-else>Start haste</span>
+            </button>
+            <button class="btn btn-primary" @click='pc.majorHaste = !pc.majorHaste'>
+                <i class="fa fa-bolt"></i>
+                <span v-if="pc.majorHaste">Stop major haste</span>
+                <span v-else>Start major haste</span>
+            </button>
+            <button class="btn btn-primary" @click='pc.flanking = !pc.flanking'>
+                <i class="fa fa-users"></i>
+                <span v-if="pc.flanking">Stop flank</span>
+                <span v-else>Start flank</span>
+            </button>
         </div>
     </div>
 </div>
@@ -525,6 +549,7 @@ input {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.1/vue.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.0.3/vue-resource.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.2/lodash.min.js"></script>
+<script src="lang.js"></script>
 <script src="rules.js"></script>
 
 <script>
@@ -549,6 +574,9 @@ var vm = new Vue({
                 car: 10,
                 int: 10
             },
+            flanking: true,
+            haste: true,
+            majorHaste: true,
             weapons: {
                 melee: [
                     {
@@ -563,13 +591,14 @@ var vm = new Vue({
                         ],
                         powerAttack: 5
                     },
+                    
                     {
-                        id: "shortsword",
+                        id: "rapier",
                         enhancement: 1,
-                        alignment: [
-                            "evil"
-                        ],
-                        powerAttack: 5
+                        elemental: [],
+                        alignment: [],
+                        finesse: true,
+                        powerAttack: 0
                     }
                 ],
                 ranged: [
@@ -579,7 +608,9 @@ var vm = new Vue({
                         elemental: [
                             "electric"
                         ],
-                        composite: 5
+                        alignment: [],
+                        composite: 5,
+                        powerAttack: 0
                     }
                 ]
             },
@@ -714,6 +745,16 @@ var vm = new Vue({
             });
             return deflection;
         },
+        dodge: function () {
+            var vm = this;
+            if (vm.pc.haste) {
+                return 1;
+            }
+            if (vm.pc.majorHaste) {
+                return 4;
+            }
+            return 0;
+        },
         effectiveDex: function () {
             var vm = this;
             if (vm.pc.armor.id && (vm.abilities.dex.modifier > vm.armor.maxDex)) {
@@ -805,10 +846,10 @@ var vm = new Vue({
         attacks: function () {
             var vm = this,
                 attack = {};
-
             return _.mapValues(vm.pc.weapons, function (weapons, weaponsType) {
                 return _.map(weapons, function (weapon) {
-                    var str = 0,
+                    var factors = [],
+                        str = 0,
                         powerAttack = 0;
 
                     // Set weapon
@@ -818,7 +859,11 @@ var vm = new Vue({
                     ];
 
                     // Set attack ability
-                    weapon.attackAbility = (weapon.type === 'melee')? 'str' : 'dex';
+                    if (weapon.type === 'melee') {
+                        weapon.attackAbility = (weapon.finesse)? 'dex' : 'str';
+                    } else {
+                        weapon.attackAbility = 'dex';
+                    }
 
                     // Set max attack bonus
                     weapon.attackFactors = {
@@ -826,6 +871,8 @@ var vm = new Vue({
                         ability: vm.abilities[weapon.attackAbility].modifier,
                         size: vm.size.modifier,
                         enhancement: weapon.enhancement,
+                        haste: vm.pc.haste? 1 : 0,
+                        flanking: vm.pc.flanking? 2 : 0,
                         powerAttack: _.isUndefined(weapon.powerAttack)? 0 : 0 - weapon.powerAttack
                     };
                     weapon.max = _.sum(_.values(weapon.attackFactors));
@@ -860,9 +907,29 @@ var vm = new Vue({
                     // Get minimum fixed damage
                     weapon.damage.fixed = weapon.damage.str + weapon.enhancement + (weapon.damage.powerAttackBonus? weapon.damage.powerAttackBonus : 0);
 
-                    // Get attack and damage strings
-                    weapon.attackFactorsString = vm.attackFactorsString(weapon);
-                    weapon.damageFactorsString = vm.damageFactorsString(weapon);
+                    // Get attack strings
+                    factors = [];
+                    _.each(weapon.attackFactors, function (factor, key) {
+                        if (key === 'powerAttack' && weaponsType === 'ranged') return;
+                        if (key === 'ability') {
+                            key = weapon.attackAbility;
+                        }
+                        if (!_.isUndefined(factor)) {
+                            factors.push(vm.modifier(factor) + ' ' + vm.translate(key));
+                        }
+                    });
+                    weapon.attackFactorsString = factors.join(' ');
+
+                    // Get damage string
+                    factors = [];
+                    _.each(weapon.damage, function (factor, key) {
+                        if (key === 'powerAttackBonus' && weaponsType === 'ranged') return;
+                        if (key === 'fixed' || key === 'dice') return;
+                        if (!_.isUndefined(factor)) {
+                            factors.push(vm.modifier(factor) + ' ' + vm.translate(key));
+                        }
+                    });
+                    weapon.damageFactorsString = factors.join(' ');
 
                     // Return computed weapon stats
                     return weapon;
@@ -919,49 +986,11 @@ var vm = new Vue({
             var vm = this;
             vm.pc.enhancers.splice(index, 1);
         },
-
-
-
-
-
-        attackFactorsString: function (weapon) {
-            var vm = this,
-                factors = [];
-            factors = [
-                weapon.attackFactors.baseAttack + ' base attack',
-                vm.modifier(weapon.attackFactors.ability) + ' ' + weapon.attackAbility,
-                vm.modifier(weapon.attackFactors.size) + ' size'
-            ];
-            if (weapon.attackFactors.enhancement) {
-                factors.push('+ ' + weapon.attackFactors.enhancement + ' enhancement');
-            }
-            if (weapon.attackFactors.powerAttack) {
-                factors.push(vm.modifier(weapon.attackFactors.powerAttack) + ' power attack');
-            }
-            return factors.join(' ');
-        },
-        damageFactorsString: function (weapon) {
-            var vm = this,
-                factors = [];
-            factors = [
-                vm.modifier(weapon.damage.str) + ' str'
-            ];
-            if (weapon.damage.enhancement) {
-                factors.push('+ ' + weapon.damage.enhancement + ' enhancement');
-            }
-            if (weapon.damage.powerAttackBonus !== undefined) {
-                factors.push(vm.modifier(weapon.damage.powerAttackBonus) + ' power attack');
-            }
-            if (weapon.damage.size !== undefined) {
-                factors.push(vm.modifier(weapon.damage.size) + ' size');
-            }
-            return factors.join(' ');
-        },
         modifier: function (value) {
-            var html = '',
+            var string = '',
                 sign = '+';
             if (_.isUndefined(value)) {
-                return html;
+                return string;
             }
             value = parseInt(value, 10);
             if (value === 0) {
@@ -970,12 +999,11 @@ var vm = new Vue({
             if (value < 0) {
                 sign = '-';
             }
-            html = sign + ' ' + Math.abs(value);
-            return html;
+            string = sign + ' ' + Math.abs(value);
+            return string;
         },
-        toggleShowInfo: function (weapon) {
-            console.log(weapon);
-            weapon.showInfo = !weapon.showInfo;
+        translate: function (string) {
+            return window.lang[string];
         }
     }
 });

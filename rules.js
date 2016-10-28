@@ -48,9 +48,10 @@ var rules = {
     ],
     weapons: {
         melee: [
-            {id: 'shortsword', name: 'Shortsword', dice: '1d6', type: 'melee', twoHands: false},
-            {id: 'longsword', name: 'Longsword', dice: '1d8', type: 'melee', twoHands: true},
-            {id: 'greatsword', name: 'Greatsword', dice: '2d6', type: 'melee', twoHands: true}
+            {id: 'shortsword', name: 'Shortsword', dice: '1d6', type: 'melee', twoHands: false, canHaveFinesse: false},
+            {id: 'longsword', name: 'Longsword', dice: '1d8', type: 'melee', twoHands: true, canHaveFinesse: false},
+            {id: 'greatsword', name: 'Greatsword', dice: '2d6', type: 'melee', twoHands: true, canHaveFinesse: false},
+            {id: 'rapier', name: 'Rapier', dice: '1d6', type: 'melee', twoHands: false, canHaveFinesse: true}
         ],
         ranged: [
             {id: 'shortbow', name: 'Shortbow', dice: '1d6', type: 'ranged'},
@@ -120,7 +121,8 @@ var rules = {
         {type: 'natural', flatFooted: true, touch: false, scorePath: 'pc.naturalArmor'},
         {type: 'deflection', flatFooted: true, touch: true, scorePath: 'deflection'},
         {type: 'size', flatFooted: true, touch: true, scorePath: 'size.modifier'},
-        {type: 'dexterity', flatFooted: false, touch: true, scorePath: 'effectiveDex'}
+        {type: 'dexterity', flatFooted: false, touch: true, scorePath: 'effectiveDex'},
+        {type: 'dodge', flatFooted: false, touch: true, scorePath: 'dodge'}
     ],
     enhancers: {
         categories: [
