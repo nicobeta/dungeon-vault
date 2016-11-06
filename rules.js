@@ -6,15 +6,15 @@ var rules = {
         {id: 'will', name: 'Will', ability: 'wis'}
     ],
     sizes: [
-        {id: 'fine', name: 'Fine', modifier: 8},
-        {id: 'diminutive', name: 'Diminutive', modifier: 4},
-        {id: 'tiny', name: 'Tiny', modifier: 2},
-        {id: 'small', name: 'Small', modifier: 1},
-        {id: 'medium', name: 'Medium', modifier: 0},
-        {id: 'large', name: 'Large', modifier: -1},
-        {id: 'huge', name: 'Huge', modifier: -2},
-        {id: 'gargantuan', name: 'Gargantuan', modifier: -4},
-        {id: 'colossal', name: 'Colossal', modifier: -8}
+        {id: 'fine', name: 'Fine', modifier: 8, modifier: 4, abilities: {str: 0, dex: 0, con: 0}},
+        {id: 'diminutive', name: 'Diminutive', modifier: 4, abilities: {str: 0, dex: 2, con: 0}},
+        {id: 'tiny', name: 'Tiny', modifier: 2, abilities: {str: 2, dex: 2, con: 0}},
+        {id: 'small', name: 'Small', modifier: 1, abilities: {str: 4, dex: 2, con: 0}},
+        {id: 'medium', name: 'Medium', modifier: 0, abilities: {str: 4, dex: 2, con: 2}},
+        {id: 'large', name: 'Large', modifier: -1, abilities: {str: 8, dex: 2, con: 4}},
+        {id: 'huge', name: 'Huge', modifier: -2, abilities: {str: 8, dex: 2, con: 4}},
+        {id: 'gargantuan', name: 'Gargantuan', modifier: -4, abilities: {str: 8, dex: 0, con: 4}},
+        {id: 'colossal', name: 'Colossal', modifier: -8, abilities: {str: 8, dex: 0, con: 4}}
     ],
     types: [
         {id: 'aberration', name: 'Aberration', dice: 8, attack: 0.75, goodSaves: ['will']},
@@ -44,14 +44,25 @@ var rules = {
         {id: 'ranger', name: 'Ranger', dice: 8, attack: 1, goodSaves: ['fort', 'ref']},
         {id: 'rogue', name: 'Rogue', dice: 6, attack: 0.75, goodSaves: ['ref']},
         {id: 'sorcerer', name: 'Sorcerer', dice: 4, attack: 0.5, goodSaves: ['will']},
-        {id: 'wizard', name: 'Wizard', dice: 4, attack: 0.5, goodSaves: ['will']}
+        {id: 'wizard', name: 'Wizard', dice: 4, attack: 0.5, goodSaves: ['will']},
+        {id: 'contemplator', name: 'Contemplator', dice: 6, attack: 0.5, goodSaves: ['will']},
+        {id: 'duskblade', name: 'Duskblade', dice: 8, attack: 1, goodSaves: ['fort','will']},
+        {id: 'templar', name: 'Templar', dice: 10, attack: 1, goodSaves: ['fort','will']}
     ],
     weapons: {
         melee: [
             {id: 'shortsword', name: 'Shortsword', dice: '1d6', type: 'melee', twoHands: false, finesseable: false},
+            {id: 'rapier', name: 'Rapier', dice: '1d6', type: 'melee', twoHands: false, finesseable: true},
             {id: 'longsword', name: 'Longsword', dice: '1d8', type: 'melee', twoHands: true, finesseable: false},
+            {id: 'mace', name: 'Mace', dice: '1d8', type: 'melee', twoHands: true, finesseable: false},
+            {id: 'warhammer', name: 'Warhammer', dice: '1d8', type: 'melee', twoHands: true, finesseable: false},
+            {id: 'falchion', name: 'Falchion', dice: '2d4', type: 'melee', twoHands: true, finesseable: false},
             {id: 'greatsword', name: 'Greatsword', dice: '2d6', type: 'melee', twoHands: true, finesseable: false},
-            {id: 'rapier', name: 'Rapier', dice: '1d6', type: 'melee', twoHands: false, finesseable: true}
+            {id: 'greataxe', name: 'Greataxe', dice: '1d12', type: 'melee', twoHands: true, finesseable: false},
+            {id: 'greatclub', name: 'Greatclub', dice: '1d10', type: 'melee', twoHands: true, finesseable: false},
+            {id: 'greathammer', name: 'Greathammer', dice: '1d12', type: 'melee', twoHands: true, finesseable: false},
+            {id: 'doubleAxe', name: 'Orc Double Axe', dice: '1d8', type: 'melee', twoHands: false, finesseable: false, doubleWeapon: true},
+            {id: 'twoBladedSword', name: 'Two Bladed Sword', dice: '1d8', type: 'melee', twoHands: false, finesseable: false, doubleWeapon: true}
         ],
         ranged: [
             {id: 'shortbow', name: 'Shortbow', dice: '1d6', type: 'ranged'},

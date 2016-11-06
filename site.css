@@ -1,0 +1,56 @@
+body {
+    font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px;
+    padding-top: 5rem;
+}
+
+.btn, .form-control {
+    font-size: inherit;
+}
+
+.text-muted {
+    color: #AAA;
+}
+
+select,
+input {
+    margin-bottom: 1rem;
+}
+
+.btn i {
+    margin-right: .5rem;
+}
+
+.actions .btn {
+    margin-bottom: .5rem;
+    text-transform: uppercase;
+    outline: none !important;
+    border: none;
+    color: white;
+    background: #0275d8;
+}
+
+.actions .btn.active {
+    background: #d9534f;
+}
+
+.actions .btn img {
+    margin-bottom: .25rem;
+}
+
+.nav-item {
+    font-size: 1.5rem;
+    padding: 0 .5rem;
+}
+
+.navbar-brand {
+    font-size: 1.8rem;
+}
+
+/*
+@media (min-width: 768px) {
+    .container {
+        max-width: 720px;
+    }
+}
+*/

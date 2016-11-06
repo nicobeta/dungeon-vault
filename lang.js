@@ -8,9 +8,13 @@ var lang = {
     powerAttack: 'power attack',
     str: 'strength',
     dex: 'dexterity',
+    wis: 'wisdom',
     powerAttackBonus: 'power attack',
     dice: 'dice',
     focus: 'focus',
     specialization: 'specialization',
-    masterwork: 'masterwork'
+    masterwork: 'masterwork',
+    pointBlankShot: 'point blank shot',
+    rapidShot: 'rapid shot',
+    twoWeaponFighting: 'two weapon fighting'
 }
