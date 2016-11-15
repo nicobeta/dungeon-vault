@@ -2,6 +2,12 @@
 
 $request_body = file_get_contents('php://input');
 $data = json_decode($request_body);
-$path = 'characters/' . $data->name . '.json';
+
+if (!$data->id) {
+    $data->id = strtolower($data->name);
+}
+
+$folder = $data->npc? 'npc' : 'pc';
+
+$path = 'characters/' . $folder . '/' . $data->id . '.json';
 file_put_contents($path, $request_body);
-chmod($path, 0777);

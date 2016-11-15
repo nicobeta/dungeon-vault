@@ -1,0 +1,82 @@
+{
+  "id": "mummy_queen",
+  "name": "Mummy Queen",
+  "size": "medium",
+  "npc": true,
+  "currentSize": "medium",
+  "type": "undead",
+  "naturalArmor": 10,
+  "transformation": true,
+  "abilities": {
+    "str": 26,
+    "dex": 12,
+    "con": 10,
+    "wis": 30,
+    "car": 17,
+    "int": 12
+  },
+  "flanking": false,
+  "haste": false,
+  "majorHaste": false,
+  "titanPower": false,
+  "weapons": {
+    "melee": [
+      {
+        "id": "mace",
+        "enhancement": 5,
+        "elemental": [
+          "electric"
+        ],
+        "alignment": [
+          "law",
+          "evil"
+        ],
+        "focus": 0,
+        "specialization": 0,
+        "masterwork": false,
+        "powerAttack": 0,
+        "finesse": false
+      }
+    ],
+    "ranged": []
+  },
+  "armor": {
+    "id": "full-plate",
+    "enhancement": 5,
+    "mithral": true
+  },
+  "shield": {
+    "id": "tower",
+    "enhancement": 5
+  },
+  "dr": {
+    "reduction": 5,
+    "vulnerability": "-"
+  },
+  "sr": 0,
+  "enhancers": [
+    {
+      "category": "object",
+      "name": "Periapt of Wisdom",
+      "type": "wis",
+      "bonus": 6
+    }
+  ],
+  "classes": [
+    {
+      "id": "cleric",
+      "levels": 20
+    }
+  ],
+  "specialQualities": [
+    {
+      "text": "Darkvision 60 ft., resistance to fire 10, undead traits, vulnerability to fire"
+    },
+    {
+      "text": "Despair: save or be paralyzed with fear for 1d4 rounds (Will 26)"
+    },
+    {
+      "text": "Divine Power"
+    }
+  ]
+}

@@ -1,7 +1,11 @@
 <?php
 
-$name = $_GET['name'];
-$character = file_get_contents('characters/' . $name . '.json');
+if (!isset($_GET['name'])) {
+    exit;
+}
+$id = $_GET['name'];
+$folder = in_array($id, ['juan', 'grageon', 'bistolfi', 'angor'])? 'pc' : 'npc';
+$file = file_get_contents('characters/' . $folder . '/' . $id . '.json');
 
 ?>
 <!DOCTYPE HTML>
@@ -16,9 +20,12 @@ $character = file_get_contents('characters/' . $name . '.json');
 <meta name='apple-mobile-web-app-capable' content='yes'>
 <meta name='apple-mobile-web-app-status-bar-style' content='black'>
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css">
-<link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel='stylesheet'>
+<!-- Icons -->
+<link rel="shortcut icon" href="unnamed.png">
+
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css">
+<link href='//fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel='stylesheet'>
 <link href="site.css" rel='stylesheet'>
 </head>
 <body>
@@ -48,7 +55,7 @@ $character = file_get_contents('characters/' . $name . '.json');
 
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
+            <div v-show="editMode" class="col-md-12">
                 <div class="card">
                     <div class="card-header">
                         Basics
@@ -73,7 +80,7 @@ $character = file_get_contents('characters/' . $name . '.json');
                             </div>
                         </div>
                         <div class="row">
-                            <div v-bind:class="[pc.pnj? 'col-md-6' : 'col-md-12']">
+                            <div v-bind:class="[pc.npc? 'col-md-6' : 'col-md-12']">
                                 <label>Size</label>
                                 <div class="form-group">
                                     <select v-model="pc.size" class="form-control">
@@ -83,10 +90,10 @@ $character = file_get_contents('characters/' . $name . '.json');
                                     </select>
                                 </div>
                             </div>
-                            <div v-if="pc.pnj" class="col-md-6">
+                            <div v-if="pc.npc" class="col-md-6">
                                 <div class="form-group">
                                     <label>Current size</label>
-                                    <select v-model="pc.currentSize" class="form-control" disabled>
+                                    <select v-model="pc.currentSize" class="form-control">
                                         <option v-for="size in rules.sizes" v-bind:value="size.id">
                                             {{size.name}}
                                         </option>
@@ -130,7 +137,7 @@ $character = file_get_contents('characters/' . $name . '.json');
                         <div v-for="(cl, index) in pc.classes" class="form-group row">
                             <div class="col-md-8">
                                 <select v-model="cl.id" class="form-control">
-                                    <option v-for="value in rules.classes" v-bind:value="value.id">
+                                    <option v-for="value in availableClasses" v-bind:value="value.id">
                                         {{value.name}}
                                     </option>
                                 </select>
@@ -165,9 +172,9 @@ $character = file_get_contents('characters/' . $name . '.json');
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group">
+                                <div v-if="pc.armor.id" class="form-group">
                                     <label>Enhancement</label>
-                                    <select v-if="pc.armor.id" v-model="pc.armor.enhancement" class="form-control">
+                                    <select v-model="pc.armor.enhancement" class="form-control">
                                         <option v-for="bonus in rules.armorEnhancement" v-bind:value="bonus">
                                             +{{bonus}}
                                         </option>
@@ -195,9 +202,9 @@ $character = file_get_contents('characters/' . $name . '.json');
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group">
+                                <div v-if="pc.shield.id" class="form-group">
                                     <label>Enhancement</label>
-                                    <select v-if="pc.shield.id" v-model="pc.shield.enhancement" class="form-control">
+                                    <select v-model="pc.shield.enhancement" class="form-control">
                                         <option v-for="bonus in rules.armorEnhancement" v-bind:value="bonus">
                                             +{{bonus}}
                                         </option>
@@ -490,8 +497,30 @@ $character = file_get_contents('characters/' . $name . '.json');
                         <button @click='addEnhancer' class="btn btn-primary">Add enhancer</button>
                     </div>
                 </div>
+                <div class="card">
+                    <div class="card-header">
+                        Special Qualities
+                    </div>
+                    <div class="card-block">
+                        <div v-for="(quality, index) in pc.specialQualities">
+                            <div class="form-group row">
+                                <div class="col-md-10">
+                                    <input type="text" v-model="quality.text" class="form-control">
+                                </div>
+                                <div class="col-md-2">
+                                    <button @click='removeQuality(index)' class="btn btn-danger">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button @click='addQuality' class="btn btn-primary">Add quality</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-6">
+            <div v-show="!editMode" class="col-md-12">
                 <div class="card">
                     <div class="card-header">
                         Basics
@@ -645,6 +674,16 @@ $character = file_get_contents('characters/' . $name . '.json');
                         </div>
                     </div>
                 </div>
+                <div class="card">
+                    <div class="card-header">
+                        Special Qualities
+                    </div>
+                    <div class="card-block">
+                        <p v-for="(quality, index) in pc.specialQualities">
+                            {{quality.text}}
+                        </p>
+                    </div>
+                </div>
                 <hr>
                 <div class="actions">
                     <button class="btn btn-block" v-bind:class="{'active': pc.haste}" @click='pc.haste = !pc.haste'>
@@ -688,12 +727,12 @@ $character = file_get_contents('characters/' . $name . '.json');
 </template>
 
 <script type="text/javascript">
-var character = <?=$character?>;
+var character = <?=$file?>;
 </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.1/vue.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.0.3/vue-resource.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.2/lodash.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.0.1/vue.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/vue-resource/1.0.3/vue-resource.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.2/lodash.min.js"></script>
 <script src="lang.js?"></script>
 <script src="rules.js?"></script>
 <script src="app.js?"></script>

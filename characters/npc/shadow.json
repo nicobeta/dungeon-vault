@@ -1,0 +1,68 @@
+{
+  "id": "shadow",
+  "name": "Base",
+  "size": "medium",
+  "npc": true,
+  "currentSize": "medium",
+  "type": "humanoid",
+  "naturalArmor": 0,
+  "abilities": {
+    "str": 10,
+    "dex": 10,
+    "con": 10,
+    "wis": 10,
+    "car": 10,
+    "int": 10
+  },
+  "flanking": false,
+  "haste": false,
+  "majorHaste": false,
+  "titanPower": false,
+  "weapons": {
+    "melee": [
+      {
+        "id": "shortsword",
+        "enhancement": 0,
+        "elemental": [],
+        "alignment": [],
+        "focus": 0,
+        "specialization": 0,
+        "masterwork": false,
+        "powerAttack": 0,
+        "finesse": false
+      }
+    ],
+    "ranged": [
+      {
+        "id": "shortbow",
+        "enhancement": 0,
+        "elemental": [],
+        "alignment": [],
+        "composite": 0,
+        "focus": 0,
+        "specialization": 0
+      }
+    ]
+  },
+  "armor": {
+    "id": "leather",
+    "enhancement": 0
+  },
+  "shield": {
+    "id": "tower",
+    "enhancement": 0
+  },
+  "dr": {
+    "reduction": 0,
+    "vulnerability": "good"
+  },
+  "sr": 0,
+  "enhancers": [],
+  "classes": [
+    {
+      "id": "fighter",
+      "levels": 1
+    }
+  ],
+  "specialQualities": []
+}

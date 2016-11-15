@@ -47,10 +47,13 @@ var rules = {
         {id: 'wizard', name: 'Wizard', dice: 4, attack: 0.5, goodSaves: ['will']},
         {id: 'contemplator', name: 'Contemplator', dice: 6, attack: 0.5, goodSaves: ['will']},
         {id: 'duskblade', name: 'Duskblade', dice: 8, attack: 1, goodSaves: ['fort','will']},
-        {id: 'templar', name: 'Templar', dice: 10, attack: 1, goodSaves: ['fort','will']}
+        {id: 'templar', name: 'Templar', dice: 10, attack: 1, goodSaves: ['fort','will']},
+        {id: 'shadowdancer', name: 'Shadowdancer', dice: 8, attack: 0.75, goodSaves: ['ref']}
     ],
     weapons: {
         melee: [
+            {id: 'touch', name: 'Touch', dice: '1d3', type: 'melee', twoHands: false, finesseable: true},
+            {id: 'slam', name: 'Slam', dice: '1d8', type: 'melee', twoHands: false, finesseable: true},
             {id: 'shortsword', name: 'Shortsword', dice: '1d6', type: 'melee', twoHands: false, finesseable: false},
             {id: 'rapier', name: 'Rapier', dice: '1d6', type: 'melee', twoHands: false, finesseable: true},
             {id: 'longsword', name: 'Longsword', dice: '1d8', type: 'melee', twoHands: true, finesseable: false},
@@ -129,7 +132,7 @@ var rules = {
     acFactors: [
         {type: 'armor', flatFooted: true, touch: false, scorePath: 'armor.total'},
         {type: 'shield', flatFooted: true, touch: false, scorePath: 'shield.total'},
-        {type: 'natural', flatFooted: true, touch: false, scorePath: 'pc.naturalArmor'},
+        {type: 'natural', flatFooted: true, touch: false, scorePath: 'naturalArmor'},
         {type: 'deflection', flatFooted: true, touch: true, scorePath: 'deflection'},
         {type: 'size', flatFooted: true, touch: true, scorePath: 'size.modifier'},
         {type: 'dexterity', flatFooted: false, touch: true, scorePath: 'effectiveDex'},
@@ -142,7 +145,7 @@ var rules = {
             {id: 'spell', name: 'Spell'}
         ],
         types: [
-            '-', 'str', 'dex', 'con', 'wis', 'int', 'car', 'saves', 'deflection', 'armor', 'shield', 'skills'
+            '-', 'str', 'dex', 'con', 'wis', 'int', 'car', 'saves', 'deflection', 'armor', 'shield', 'skills', 'naturalArmor'
         ]
     },
     baseMeleeWeapon: {id: 'shortsword', enhancement: 0, elemental: [], alignment: [], focus: 0, specialization: 0, masterwork: true, powerAttack: 0, finesse: false},

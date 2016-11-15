@@ -9,10 +9,22 @@ var vm = new Vue({
         pc: window.character,
         rules: window.rules
     },
+    created: function () {
+        document.title = this.pc.name;
+    },
     computed: {
+        availableClasses: function () {
+            var vm = this;
+            if (vm.pc.npc) {
+                vm.rules.classes.push(_.find(vm.rules.types, _.matchesProperty('id', vm.pc.type)));
+            }
+            return vm.rules.classes;
+        },
         abilities: function () {
             var vm = this,
-                sizeScoreModifiers = vm.sizeScoreModifiers;
+                sizeScoreModifiers = _.clone(vm.sizeScoreModifiers);
+
+            console.info(sizeScoreModifiers);
 
             // Return abilities
             return _.mapValues(vm.pc.abilities, function (value, key) {
@@ -64,6 +76,8 @@ var vm = new Vue({
                 }
             }
 
+            console.log(sizeScoreModifiers);
+
             // Return final values
             return sizeScoreModifiers;
         },
@@ -85,6 +99,9 @@ var vm = new Vue({
         armor: function () {
             var vm = this,
                 armor;
+            if (!vm.pc.armor.id) {
+                return {};
+            }
             armor = _.find(vm.rules.armors, _.matchesProperty('id', vm.pc.armor.id));
             armor.total = armor.bonus + vm.pc.armor.enhancement;
             armor.magic = _.chain(vm.pc.enhancers).filter({type: 'armor'}).maxBy('bonus').value();
@@ -96,6 +113,9 @@ var vm = new Vue({
         shield: function () {
             var vm = this,
                 shield;
+            if (!vm.pc.shield.id) {
+                return {};
+            }
             shield = _.find(vm.rules.shields, _.matchesProperty('id', vm.pc.shield.id));
             shield.total = shield.bonus + vm.pc.shield.enhancement;
             shield.magic = _.chain(vm.pc.enhancers).filter({type: 'shield'}).maxBy('bonus').value();
@@ -108,7 +128,7 @@ var vm = new Vue({
             var vm = this,
                 pcSize = {},
                 sizeIndex = _.findIndex(vm.rules.sizes, {id: vm.pc.size});
-            if (!vm.pc.titanPower) {
+            if (!vm.pc.titanPower && !vm.pc.npc) {
                 switch (vm.pc.magicSize) {
                     case 'enlarged':
                         vm.pc.currentSize = vm.rules.sizes[sizeIndex + 1].id;
@@ -133,6 +153,17 @@ var vm = new Vue({
         type: function () {
             var vm = this;
             return _.find(vm.rules.types, _.matchesProperty('id', vm.pc.type));
+        },
+        naturalArmor: function () {
+            var vm = this,
+                naturalArmor = 0;
+            _.forEach(vm.pc.enhancers, function (enhancer) {
+                if (enhancer.type === 'naturalArmor' && naturalArmor < enhancer.bonus) {
+                    naturalArmor = enhancer.bonus;
+                }
+            });
+            naturalArmor = naturalArmor + vm.pc.naturalArmor;
+            return naturalArmor;
         },
         deflection: function () {
             var vm = this,
@@ -190,13 +221,14 @@ var vm = new Vue({
         classes: function () {
             var vm = this;
             return _.map(vm.pc.classes, function (cl) {
-                return _.merge(_.clone(cl), _.find(vm.rules.classes, _.matchesProperty('id', cl.id)));
+                return _.merge(_.clone(cl), _.find(vm.availableClasses, _.matchesProperty('id', cl.id)));
             });
         },
         hp: function () {
             var vm = this;
             return _.sumBy(vm.classes, function (cl) {
-                return cl.levels * (cl.dice + vm.abilities.con.modifier);
+                var dice = vm.pc.type === 'undead'? 12 : cl.dice;
+                return cl.levels * (dice + vm.abilities.con.modifier);
             });
         },
         saves: function () {
@@ -236,6 +268,9 @@ var vm = new Vue({
         },
         baseAttack: function () {
             var vm = this;
+            if (!_.isUndefined(vm.pc.transformation) && vm.pc.transformation) {
+                return _.sum(_.map(vm.classes, 'levels'));
+            }
             return _.sum(_.map(vm.classes, function (cl) {
                 return Math.floor(cl.attack * cl.levels);
             }));
@@ -369,10 +404,19 @@ var vm = new Vue({
     },
     watch: {
         'pc.armor.id': function (armor) {
-            if (!armor) this.pc.armor.enhancement = 0;
+            if (!armor) {
+                this.pc.armor.id = false;
+                this.pc.armor.enhancement = 0;
+            }
         },
         'pc.shield.id': function (shield) {
-            if (!shield) this.pc.shield.enhancement = 0;
+            if (!shield) {
+                this.pc.shield.id = false;
+                this.pc.shield.enhancement = 0;
+            }
+        },
+        'pc.name': function (name) {
+            document.title = name;
         }
     },
     methods: {
@@ -407,6 +451,14 @@ var vm = new Vue({
         removeEnhancer: function (index) {
             var vm = this;
             vm.pc.enhancers.splice(index, 1);
+        },
+        addQuality: function () {
+            var vm = this;
+            vm.pc.specialQualities.push({text: ''});
+        },
+        removeQuality: function (index) {
+            var vm = this;
+            vm.pc.specialQualities.splice(index, 1);
         },
         startAntimagic: function () {
             var vm = this;
