@@ -21,7 +21,7 @@ $file = file_get_contents('characters/' . $folder . '/' . $id . '.json');
 <meta name='apple-mobile-web-app-status-bar-style' content='black'>
 
 <!-- Icons -->
-<link rel="shortcut icon" href="unnamed.png">
+<link rel="shortcut icon" href="favicon.png">
 
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css">
 <link href='//fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>

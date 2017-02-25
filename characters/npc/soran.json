@@ -1,9 +1,10 @@
 {
-  "id": "vodak",
+  "id": "soran",
   "name": "Base",
   "size": "medium",
   "npc": true,
   "currentSize": "medium",
+  "magicSize": "normal",
   "type": "humanoid",
   "naturalArmor": 0,
   "abilities": {
