@@ -24,8 +24,6 @@ var vm = new Vue({
             var vm = this,
                 sizeScoreModifiers = _.clone(vm.sizeScoreModifiers);
 
-            console.info(sizeScoreModifiers);
-
             // Return abilities
             return _.mapValues(vm.pc.abilities, function (value, key) {
                 var ability = {name: key, score: value};
@@ -75,8 +73,6 @@ var vm = new Vue({
                     sizeScoreModifiers.con -= vm.rules.sizes[sizeIndex].abilities.con;
                 }
             }
-
-            console.log(sizeScoreModifiers);
 
             // Return final values
             return sizeScoreModifiers;
@@ -237,7 +233,7 @@ var vm = new Vue({
 
                 // Calculate base
                 save.base = _.sumBy(vm.classes, function (cl) {
-                    return _.includes(save.id, cl.goodSaves)? Math.floor(cl.levels / 2) + 2 : Math.floor(cl.levels / 3);
+                    return _.includes(cl.goodSaves, save.id)? Math.floor(cl.levels / 2) + 2 : Math.floor(cl.levels / 3);
                 });
 
                 // Get enhancers
