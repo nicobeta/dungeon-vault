@@ -124,13 +124,10 @@ var vm = new Vue({
             var vm = this,
                 pcSize = {},
                 sizeIndex = _.findIndex(vm.rules.sizes, {id: vm.pc.size});
-            if (!vm.pc.titanPower && !vm.pc.npc) {
+            if (!vm.pc.titanPower) {
                 switch (vm.pc.magicSize) {
                     case 'enlarged':
                         vm.pc.currentSize = vm.rules.sizes[sizeIndex + 1].id;
-                        break;
-                    case 'normal':
-                        vm.pc.currentSize = vm.pc.size;
                         break;
                     case 'reduced':
                         vm.pc.currentSize = vm.rules.sizes[sizeIndex - 1].id;

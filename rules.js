@@ -48,10 +48,12 @@ var rules = {
         {id: 'contemplator', name: 'Contemplator', dice: 6, attack: 0.5, goodSaves: ['will']},
         {id: 'duskblade', name: 'Duskblade', dice: 8, attack: 1, goodSaves: ['fort','will']},
         {id: 'templar', name: 'Templar', dice: 10, attack: 1, goodSaves: ['fort','will']},
-        {id: 'shadowdancer', name: 'Shadowdancer', dice: 8, attack: 0.75, goodSaves: ['ref']}
+        {id: 'shadowdancer', name: 'Shadowdancer', dice: 8, attack: 0.75, goodSaves: ['ref']},
+        {id: 'mystic', name: 'Mystic Theurge', dice: 4, attack: 0.5, goodSaves: ['will']}
     ],
     weapons: {
         melee: [
+            {id: 'bite', name: 'Bite', dice: '1d6', type: 'melee', twoHands: false, finesseable: true},
             {id: 'touch', name: 'Touch', dice: '1d3', type: 'melee', twoHands: false, finesseable: true},
             {id: 'slam', name: 'Slam', dice: '1d8', type: 'melee', twoHands: false, finesseable: true},
             {id: 'shortsword', name: 'Shortsword', dice: '1d6', type: 'melee', twoHands: false, finesseable: false},
@@ -68,6 +70,7 @@ var rules = {
             {id: 'twoBladedSword', name: 'Two Bladed Sword', dice: '1d8', type: 'melee', twoHands: false, finesseable: false, doubleWeapon: true}
         ],
         ranged: [
+            {id: 'ray', name: 'Ray', dice: '1d4', type: 'ranged'},
             {id: 'shortbow', name: 'Shortbow', dice: '1d6', type: 'ranged'},
             {id: 'longbow', name: 'Longbow', dice: '1d8', type: 'ranged'},
             {id: 'hand-crossbow', name: 'Hand crossbow', dice: '1d4', type: 'ranged'},
