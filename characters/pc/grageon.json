@@ -1,1 +1,86 @@
-{"id":"grageon","name":"Grageon","npc":false,"size":"medium","currentSize":"medium","magicSize":"normal","type":"humanoid","naturalArmor":0,"abilities":{"str":18,"dex":16,"con":14,"wis":14,"car":11,"int":26},"flanking":false,"haste":false,"majorHaste":false,"titanPower":false,"weapons":{"melee":[{"enhancement":5,"elemental":[],"alignment":[],"focus":0,"specialization":0,"masterwork":true,"finesse":false,"powerAttack":0},{"id":"greatsword","enhancement":5,"elemental":["fire"],"alignment":["good"],"focus":0,"specialization":0,"masterwork":true,"powerAttack":0,"finesse":false}],"ranged":[{"id":"longbow","enhancement":0,"elemental":[],"alignment":[],"composite":5,"focus":0,"specialization":0,"masterwork":true}]},"armor":{"id":"breastplate","enhancement":5,"mithral":false},"shield":{"id":"heavy-steel","enhancement":5},"dr":{"reduction":3,"vulnerability":"-"},"sr":29,"enhancers":[{"category":"object","name":"Tattoo","type":"naturalArmor","bonus":2}],"classes":[{"id":"duskblade","levels":21},{"id":"fighter","levels":2}],"specialQualities":[]}
+{
+  "id": "grageon",
+  "name": "Grageon",
+  "npc": false,
+  "size": "medium",
+  "currentSize": "medium",
+  "magicSize": "normal",
+  "type": "humanoid",
+  "naturalArmor": 0,
+  "abilities": {
+    "str": 18,
+    "dex": 16,
+    "con": 14,
+    "wis": 14,
+    "car": 11,
+    "int": 26
+  },
+  "flanking": false,
+  "haste": false,
+  "majorHaste": false,
+  "titanPower": false,
+  "weapons": {
+    "melee": [
+      {
+        "enhancement": 5,
+        "elemental": [],
+        "alignment": [],
+        "focus": 0,
+        "specialization": 0,
+        "masterwork": true,
+        "finesse": false,
+        "powerAttack": 0,
+        "id": "scythe"
+      },
+      {
+        "id": "greatsword",
+        "enhancement": 5,
+        "elemental": [
+          "fire"
+        ],
+        "alignment": [
+          "good"
+        ],
+        "focus": 0,
+        "specialization": 0,
+        "masterwork": true,
+        "powerAttack": 0,
+        "finesse": false
+      }
+    ],
+    "ranged": []
+  },
+  "armor": {
+    "id": "breastplate",
+    "enhancement": 0,
+    "mithral": false
+  },
+  "shield": {
+    "id": "heavy-steel",
+    "enhancement": 0
+  },
+  "dr": {
+    "reduction": 3,
+    "vulnerability": "-"
+  },
+  "sr": 0,
+  "enhancers": [
+    {
+      "category": "object",
+      "name": "Tattoo",
+      "type": "naturalArmor",
+      "bonus": 2
+    }
+  ],
+  "classes": [
+    {
+      "id": "duskblade",
+      "levels": 21
+    },
+    {
+      "id": "fighter",
+      "levels": 2
+    }
+  ],
+  "specialQualities": []
+}
