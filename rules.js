@@ -53,40 +53,46 @@ var rules = {
     ],
     weapons: {
         melee: [
-            {id: 'bite', name: 'Bite', dice: '1d6', type: 'melee', twoHands: false, finesseable: true},
-            {id: 'doubleAxe', name: 'Orc Double Axe', dice: '1d8', type: 'melee', twoHands: false, finesseable: false, doubleWeapon: true},
-            {id: 'falchion', name: 'Falchion', dice: '2d4', type: 'melee', twoHands: true, finesseable: false},
-            {id: 'greataxe', name: 'Greataxe', dice: '1d12', type: 'melee', twoHands: true, finesseable: false},
-            {id: 'greatclub', name: 'Greatclub', dice: '1d10', type: 'melee', twoHands: true, finesseable: false},
-            {id: 'greathammer', name: 'Greathammer', dice: '1d12', type: 'melee', twoHands: true, finesseable: false},
-            {id: 'greatsword', name: 'Greatsword', dice: '2d6', type: 'melee', twoHands: true, finesseable: false},
-            {id: 'longsword', name: 'Longsword', dice: '1d8', type: 'melee', twoHands: true, finesseable: false},
-            {id: 'mace', name: 'Mace', dice: '1d8', type: 'melee', twoHands: true, finesseable: false},
-            {id: 'rapier', name: 'Rapier', dice: '1d6', type: 'melee', twoHands: false, finesseable: true},
-            {id: 'scythe', name: 'Scythe', dice: '2d4', type: 'melee', twoHands: true, finesseable: false},
-            {id: 'shortsword', name: 'Shortsword', dice: '1d6', type: 'melee', twoHands: false, finesseable: false},
-            {id: 'slam', name: 'Slam', dice: '1d8', type: 'melee', twoHands: false, finesseable: true},
-            {id: 'touch', name: 'Touch', dice: '1d3', type: 'melee', twoHands: false, finesseable: true},
-            {id: 'twoBladedSword', name: 'Two Bladed Sword', dice: '1d8', type: 'melee', twoHands: false, finesseable: false, doubleWeapon: true},
-            {id: 'warhammer', name: 'Warhammer', dice: '1d8', type: 'melee', twoHands: true, finesseable: false}
+            {id: 'bite', name: 'Bite', dice: '1d6', type: 'melee', twoHands: false, finesseable: true, increment: 'shortspear'},
+            {id: 'doubleAxe', name: 'Orc Double Axe', dice: '1d8', type: 'melee', twoHands: false, finesseable: false, increment: 'longsword', doubleWeapon: true},
+            {id: 'falchion', name: 'Falchion', dice: '2d4', type: 'melee', twoHands: true, finesseable: false, increment: 'falchion'},
+            {id: 'greataxe', name: 'Greataxe', dice: '1d12', type: 'melee', twoHands: true, finesseable: false, increment: 'greataxe'},
+            {id: 'greatclub', name: 'Greatclub', dice: '1d10', type: 'melee', twoHands: true, finesseable: false, increment: 'bastard'},
+            {id: 'greathammer', name: 'Greathammer', dice: '1d12', type: 'melee', twoHands: true, finesseable: false, increment: 'greataxe'},
+            {id: 'greatsword', name: 'Greatsword', dice: '2d6', type: 'melee', twoHands: true, finesseable: false, increment: 'greatsword'},
+            {id: 'longsword', name: 'Longsword', dice: '1d8', type: 'melee', twoHands: true, finesseable: false, increment: 'longsword'},
+            {id: 'mace', name: 'Mace', dice: '1d8', type: 'melee', twoHands: true, finesseable: false, increment: 'longsword'},
+            {id: 'rapier', name: 'Rapier', dice: '1d6', type: 'melee', twoHands: false, finesseable: true, increment: 'shortspear'},
+            {id: 'scythe', name: 'Scythe', dice: '2d4', type: 'melee', twoHands: true, finesseable: false, increment: 'falchion'},
+            {id: 'shortsword', name: 'Shortsword', dice: '1d6', type: 'melee', twoHands: false, finesseable: false, increment: 'shortspear'},
+            {id: 'slam', name: 'Slam', dice: '1d8', type: 'melee', twoHands: false, finesseable: true, increment: 'longsword'},
+            {id: 'touch', name: 'Touch', dice: '1d6', type: 'melee', twoHands: false, finesseable: true, increment: 'shortspear'},
+            {id: 'twoBladedSword', name: 'Two Bladed Sword', dice: '1d8', type: 'melee', twoHands: false, finesseable: false, increment: 'longsword', doubleWeapon: true},
+            {id: 'warhammer', name: 'Warhammer', dice: '1d8', type: 'melee', twoHands: true, finesseable: false, increment: 'longsword'}
         ],
         ranged: [
-            {id: 'dart', name: 'Dart', dice: '1d4', type: 'ranged'},
-            {id: 'hand-crossbow', name: 'Hand crossbow', dice: '1d4', type: 'ranged'},
-            {id: 'heavy-crossbow', name: 'Heavy crossbow', dice: '1d10', type: 'ranged'},
-            {id: 'javelin', name: 'Javelin', dice: '1d6', type: 'ranged'},
-            {id: 'light-crossbow', name: 'Light crossbow', dice: '1d8', type: 'ranged'},
-            {id: 'longbow', name: 'Longbow', dice: '1d8', type: 'ranged'},
-            {id: 'ray', name: 'Ray', dice: '1d4', type: 'ranged'},
-            {id: 'repeating-heavy-crossbow', name: 'Repeating heavy crossbow', dice: '1d10', type: 'ranged'},
-            {id: 'repeating-light-crossbow', name: 'Repeating light crossbow', dice: '1d8', type: 'ranged'},
-            {id: 'shortbow', name: 'Shortbow', dice: '1d6', type: 'ranged'},
-            {id: 'sling', name: 'Sling', dice: '1d4', type: 'ranged'}
+            {id: 'dart', name: 'Dart', dice: '1d4', type: 'ranged', increment: 'dagger'},
+            {id: 'hand-crossbow', name: 'Hand crossbow', dice: '1d4', type: 'ranged', increment: 'dagger'},
+            {id: 'heavy-crossbow', name: 'Heavy crossbow', dice: '1d10', type: 'ranged', increment: 'bastard'},
+            {id: 'javelin', name: 'Javelin', dice: '1d6', type: 'ranged', increment: 'shortspear'},
+            {id: 'light-crossbow', name: 'Light crossbow', dice: '1d8', type: 'ranged', increment: 'longsword'},
+            {id: 'longbow', name: 'Longbow', dice: '1d8', type: 'ranged', increment: 'longsword'},
+            {id: 'ray', name: 'Ray', dice: '1d4', type: 'ranged', increment: 'dagger'},
+            {id: 'repeating-heavy-crossbow', name: 'Repeating heavy crossbow', dice: '1d10', type: 'ranged', increment: 'bastard'},
+            {id: 'repeating-light-crossbow', name: 'Repeating light crossbow', dice: '1d8', type: 'ranged', increment: 'longsword'},
+            {id: 'shortbow', name: 'Shortbow', dice: '1d6', type: 'ranged', increment: 'shortspear'},
+            {id: 'sling', name: 'Sling', dice: '1d4', type: 'ranged', increment: 'dagger'}
         ]
     },
-    damageIncrement: [
-        '1', '1d2', '1d3', '1d4', '1d6', '1d8', '1d10', '2d6', '3d6', '4d6', '6d6', '8d6'
-    ],
+    damageIncrement: {
+        dagger: ['—', '1', '1d2', '1d3', '1d4', '1d6', '1d8', '2d6', '3d6'],
+        shortspear: ['1', '1d2', '1d3', '1d4', '1d6', '1d8', '2d6', '3d6', '4d6'],
+        falchion: ['1d2', '1d3', '1d4', '1d6', '2d4', '2d6', '3d6', '4d6', '6d6'],
+        longsword: ['1d2', '1d3', '1d4', '1d6', '1d8', '2d6', '3d6', '4d6', '6d6'],
+        bastard: ['1d3', '1d4', '1d6', '1d8', '1d10', '2d8', '3d8', '4d8', '6d8'],
+        greataxe: ['1d4', '1d6', '1d8', '1d10', '1d12', '3d6', '4d6', '6d6', '8d6'],
+        greatsword: ['1d4', '1d6', '1d8', '1d10', '2d6', '3d6', '4d6', '6d6', '8d6']
+    },
     weaponEnhancement: [
         0, 1, 2, 3, 4, 5
     ],

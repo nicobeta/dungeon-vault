@@ -45,7 +45,7 @@ $file = file_get_contents('characters/' . $folder . '/' . $id . '.json');
                     <a v-if="editMode" class="nav-link" href="#" @click.prevent="save">
                         <i v-if="editMode" class="fa fa-close"></i>
                     </a>
-                    <a v-else class="nav-link" href="#" @click.prevent="editMode = !editMode">
+                    <a v-if="!editMode && canEdit" class="nav-link" href="#" @click.prevent="toggleEditMode">
                         <i class="fa fa-pencil"></i>
                     </a>
                 </li>

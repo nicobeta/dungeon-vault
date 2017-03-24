@@ -13,6 +13,10 @@ var vm = new Vue({
         document.title = this.pc.name;
     },
     computed: {
+        canEdit: function () {
+            var vm = this;
+            return (!vm.pc.titanPower && !vm.antimagic)? true : false;
+        },
         availableClasses: function () {
             var vm = this;
             if (vm.pc.npc) {
@@ -289,16 +293,15 @@ var vm = new Vue({
                     var factors = [],
                         str = 0,
                         powerAttack = 0,
-                        weaponSize,
+                        weaponSize = vm.size.scale,
                         attackCount = vm.attackCount;
 
                     // Set weapon
                     weapon = _.merge(_.clone(weapon), _.find(vm.rules.weapons[weaponsType], _.matchesProperty('id', weapon.id)));
-                    weaponSize = _.indexOf(vm.rules.damageIncrement, weapon.dice) + (vm.size.scale - 4);
                     if (vm.pc.titanPower) {
                         weaponSize++;
                     }
-                    weapon.dice = vm.rules.damageIncrement[weaponSize];
+                    weapon.dice = vm.rules.damageIncrement[weapon.increment][weaponSize];
 
                     // Set attack ability
                     if (weapon.type === 'melee') {
@@ -512,8 +515,17 @@ var vm = new Vue({
         translate: function (string) {
             return window.lang[string];
         },
+        toggleEditMode: function () {
+            if (!vm.pc.titanPower && !vm.antimagic) {
+                this.editMode = !this.editMode;
+            }
+        },
         save: function () {
             this.editMode = false;
+            this.pc.flanking = false;
+            this.pc.haste = false;
+            this.pc.majorHaste = false;
+            this.pc.titanPower = false;
             this.$http.post('save.php', this.pc).then(function (response) {
                 console.log(response);
             });
