@@ -115,7 +115,8 @@ var rules = {
         {id: 'good'},
         {id: 'evil'},
         {id: 'chaos'},
-        {id: 'law'}
+        {id: 'law'},
+        {id: 'epic'},
     ],
     armors: [
         {id: 'padded', name: 'Padded', bonus: 1, maxDex: 8, penalty: 0, arcaneFailure:  5, weight: 10},
