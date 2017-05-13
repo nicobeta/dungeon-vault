@@ -4,7 +4,7 @@ if (!isset($_GET['name'])) {
     exit;
 }
 $id = $_GET['name'];
-$folder = in_array($id, ['juan', 'grageon', 'bistolfi', 'angor'])? 'pc' : 'npc';
+$folder = in_array($id, ['juan', 'grageon', 'bistolfi', 'angor', 'hnefi', 'norowa', 'aramil', 'ryunosuke', 'angela'])? 'pc' : 'npc';
 $file = file_get_contents('characters/' . $folder . '/' . $id . '.json');
 
 ?>
